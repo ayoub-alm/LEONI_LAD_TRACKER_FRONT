@@ -1,7 +1,6 @@
 import {Component, } from '@angular/core';
 import {AuthServiceService} from "../services/auth-service.service";
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 
 @Component({
@@ -41,8 +40,7 @@ export class LoginComponent {
         }
           ,
         error: (error) => {
-          // Handle login error
-
+          console.log(error)
         }
       });
     } else {
