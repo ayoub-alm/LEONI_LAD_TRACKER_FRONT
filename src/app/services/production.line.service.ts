@@ -1,0 +1,19 @@
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {ProductionLineModel} from "../models/production.line.model";
+import {Injectable} from "@angular/core";
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class ProductionLineService{
+  private apiUrl = 'http://localhost:5000';
+
+  constructor(private http: HttpClient) { }
+
+
+  getAll(): Observable<ProductionLineModel[]> {
+    return this.http.get<ProductionLineModel[]>(`${this.apiUrl}/production-lines`)
+  }
+}

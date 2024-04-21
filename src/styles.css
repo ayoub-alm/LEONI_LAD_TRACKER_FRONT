@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+.blue-color{
+color: rgb(0 58 138)!important;
+}
+
+.blue-bg-color{
+  background-color: rgb(0 58 138)!important;
+}
+.orange-bg-color{
+  background-color: orangered!important;
+}
+
+.orange-color{
+  color: orangered !important;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
