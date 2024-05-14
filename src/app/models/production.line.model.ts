@@ -1,11 +1,11 @@
 export class ProductionLineModel{
   id: number;
   name: string;
-  projectId: number;
+  project_id: number;
 
-  constructor(id: number, name: string, projectId: number) {
+  constructor(id: number, name: string, project_id: number) {
     this.id = id;
     this.name = name;
-    this.projectId = projectId;
+    this.project_id = project_id;
   }
 }

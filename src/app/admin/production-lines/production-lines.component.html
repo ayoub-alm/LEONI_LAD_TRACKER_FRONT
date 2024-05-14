@@ -1,6 +1,6 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 class="text-warning">Harness</h2>
+    <h2 class="text-warning">Production Lines </h2>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
         <button type="button" class="btn btn-sm btn-outline-warning">Share</button>
@@ -20,24 +20,20 @@
       <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">id</th>
-        <th scope="col">ref</th>
-        <th scope="col">Fuse Box</th>
-        <th scope="col">Family</th>
-        <th scope="col">Range time</th>
-        <th scope="col">Project Name</th>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Project ID</th>
       </tr>
       </thead>
       <tbody>
-      <ng-container *ngFor="let harness of harnesses | async">
+      <ng-container *ngFor="let productionLine of productionLines | async">
         <tr>
-          <td></td>
-          <td>{{harness.id}}</td>
-          <td>{{harness.ref}}</td>
-          <td>{{harness.fuse_box}}</td>
-          <td>{{harness.family}}</td>
-          <td>{{harness.range_time}}</td>
-          <td>{{harness.project.name}}</td>
+          <td>
+            <mat-checkbox></mat-checkbox>
+          </td>
+          <td>{{productionLine.id}}</td>
+          <td>{{productionLine.name}}</td>
+          <td>{{productionLine.project_id}}</td>
         </tr>
       </ng-container>
       </tbody>

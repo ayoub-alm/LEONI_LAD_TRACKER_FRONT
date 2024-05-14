@@ -1,38 +1,123 @@
-<div class="container-fluid" style="height: 90vh;background-color: lightblue">
-  <div class="raw  d-flex justify-content-center">
-    <div class="card col-3 mt-3 " >
-      <div class="card-header blue-bg-color text-white">
-        Info
-      </div>
-      <div class="card-body">
-        <p>Reference: <span class="blue-color">R00032</span> </p>
-        <p>Objective: <span class="blue-color">100 UNIT</span> </p>
-        <p>Delivered: <span class="blue-color">80 UNIT</span>  </p>
-        <p>Rest: <span class="blue-color">20 UNIT</span> </p>
+<div class="container-fluid bg-light" style="height: 100vh;">
+
+  <div class="raw  d-flex justify-content-around" *ngIf="!(noWorkAvailable | async)">
+    <div class="card col-2 mt-3 bg-light ">
+      <div class="card-body bg-light" >
+        <p>Production line: <span class="blue-color"> Lad 1 </span></p>
+        <p>Operator: <span class="blue-color"> 987456</span></p>
         <hr>
-        <p>Project: <span class="blue-color"> PPT12</span> </p>
-        <p>Line: <span class="blue-color"> PPT12</span> </p>
-        <p>Operator: <span class="blue-color"> Ayoub lemrachhaq</span> </p>
-      </div>
-    </div>
-
-
-    <div class="card col-5 mt-3 " >
-      <div class="card-header orange-bg-color text-white">
-        Step 1
-      </div>
-      <div class="card-body">
-        <p class="text-center">
-          <img src="https://cdn1.iconfinder.com/data/icons/logistics-delivery-line-vol-1-1/74/barcode__scanning__gun__electronics-512.png"
-               class="img-fluid" width="200px">
+        <p>project: <span class="blue-color">{{currentJob.getValue().harness.project.name}}</span></p>
+        <p>Family: <span class="blue-color">{{currentJob.getValue().harness.family}}</span></p>
+        <p>Current Reference: <span class="blue-color">{{currentJob.getValue().harness.ref}}</span></p>
+        <hr>
+        <p>To be delivered: <span class="blue-color fw-bolder">{{currentJob.getValue().demanded_quantity}}</span>
         </p>
-        <h5 class="card-title">Please Scan The Box Reference</h5>
-
-        <input class="form-control" type="text" autofocus (keyup)="onScan()">
-        <br>
-        <p class="card-text">Be careful to scan the correct <span class="orange-color fw-bold">code barre</span></p>
-        <a href="#" class="btn orange-bg-color mt-3 text-white text-end">Next</a>
+        <p>Delivered: <span class="blue-color fw-bolder">{{currentJob.getValue().delivered_quantity}}</span></p>
+        <p>Rest: <span
+          class="blue-color fw-bolder">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
+        </p>
       </div>
     </div>
+
+
+    <div class="card col-7 mt-3 ml-2 ">
+      <div class="card-body">
+        <!--        <button mat-raised-button (click)="isEditable = !isEditable">-->
+        <!--          {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}-->
+        <!--        </button>-->
+
+        <mat-stepper #stepper linear>
+          <mat-step (keydown)="nextStepEnter($event)" [editable]="isEditable">
+            <ng-template matStepLabel>Press Enter</ng-template>
+            <div class="text-center">
+              <br>
+              <img src="/assets/images/steps/entre.png" width="400px">
+              <br>
+            </div>
+          </mat-step>
+
+          <mat-step *ngIf="productionJobs.getValue()[0].harness.fuse_box" [editable]="isEditable"
+                    [stepControl]="firstFormGroup">
+            <ng-template matStepLabel>Scan The Box Reference</ng-template>
+            <div class="row">
+              <div class="col-7">
+                <img class="img-fluid" src="assets/images/steps/fuso_box_boxed.png">
+              </div>
+              <div class="col-5 d-flex flex-column justify-content-center">
+                <h4 class="card-title">Scan the Bare code</h4>
+                <form [formGroup]="firstFormGroup" class="mt-2">
+                  <input autofocus
+                         class="form-control border-2 border-primary"
+                         formControlName="firstCtrl"
+                         id="1CtrlInput" placeholder="###########">
+                </form>
+              </div>
+            </div>
+            <div class="d-flex  row justify-content-center">
+
+            </div>
+            <div class="text-center">
+              <sub class="text-center">Be careful to scan the correct <span
+                class="orange-color fw-bold">code barre</span></sub>
+            </div>
+          </mat-step>
+
+          <mat-step [editable]="isEditable" [stepControl]="secondFormGroup">
+            <ng-template matStepLabel>Label Scan</ng-template>
+            <div class="row">
+              <div class="col-7">
+                <p class="text-center ">
+                  <img class="img-fluid" src="assets/images/steps/lableScanner.png" width="300px">
+                </p>
+              </div>
+                <div class="col-5 d-flex flex-column justify-content-center">
+                  <h4 class="card-title ">Scan the lable</h4>
+                  <form [formGroup]="secondFormGroup" class="mt-2">
+                    <input autofocus class="form-control border-2 border-primary"
+                           formControlName="secondCtrl" id="2CtrlInput"
+                           required>
+                  </form>
+                 </div>
+            </div>
+          </mat-step>
+
+          <mat-step>
+            <ng-template matStepLabel>Done</ng-template>
+            <div class="text-center">
+              <div class="text-center">
+                <h2 class="blue-color text-success mt-3">
+                  Completed with success
+                </h2>
+                <br>
+                <img src="/assets/images/steps/done.webp" class="img-fluid" width="200px">
+                <br>
+              </div>
+            </div>
+          </mat-step>
+        </mat-stepper>
+      </div>
+    </div>
+
+    <div class="card col-2 mt-3  bg-light">
+      <div class="card-body">
+        <p> Awaiting jobs: <span class="fw-bolder orange-color">{{ productionJobs.getValue().length }} </span></p>
+        <p>
+          <ng-container *ngFor="let pr of productionJobs.getValue().slice(0,10)">
+            <li class="list-group-item blue-color " style="color: #0dcaf0">{{pr.harness.ref}}
+              <sup class="text-dark">{{pr.demanded_quantity}} Unit</sup></li>
+          </ng-container>
+          <span class="text-dark" *ngIf="productionJobs.getValue().length > 10"> +{{  productionJobs.getValue().length - 10 }} Item</span>
+        </p>
+        <hr>
+        <p>Date: <span class="text-dark"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
+        <p>Current Time:<span class="text-dark">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
+
+      </div>
+    </div>
+  </div>
+  <div class="raw  d-flex justify-content-around pt-5" *ngIf="(noWorkAvailable | async)">
+    <h1 class="display-1 text-warning fw-bold">
+      No Work Available
+    </h1>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {ProductionLineModel} from "../models/production.line.model";
 import {Injectable} from "@angular/core";
 
@@ -14,6 +14,10 @@ export class ProductionLineService{
 
 
   getAll(): Observable<ProductionLineModel[]> {
-    return this.http.get<ProductionLineModel[]>(`${this.apiUrl}/production-lines`)
+    return this.http.get<ProductionLineModel[]>(`${this.apiUrl}/production-lines`).pipe(
+      tap(productionLines => {
+        productionLines.map(productionLine => new ProductionLineModel(productionLine.id,productionLine.name,productionLine.project_id))
+      })
+    )
   }
 }
