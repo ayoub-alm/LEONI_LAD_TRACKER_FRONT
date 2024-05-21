@@ -33,7 +33,7 @@ export class LoginComponent {
           console.log(response.token);
           // Handle successful login
           if (response.user.role === "admin"){
-              this.router.navigateByUrl('admin/job-goals')
+              this.router.navigateByUrl('admin')
           }
           localStorage.setItem("token", response.token);
           localStorage.setItem("user", response.user);

@@ -36,7 +36,7 @@
             </div>
           </mat-step>
 
-          <mat-step *ngIf="productionJobs.getValue()[0].harness.fuse_box" [editable]="isEditable"
+          <mat-step *ngIf="currentJob.getValue().harness.fuse_box" [editable]="isEditable"
                     [stepControl]="firstFormGroup">
             <ng-template matStepLabel>Scan The Box Reference</ng-template>
             <div class="row">

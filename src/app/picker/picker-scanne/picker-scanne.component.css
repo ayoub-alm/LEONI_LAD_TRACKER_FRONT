@@ -1,3 +1,9 @@
 body{
   background-color: darkgoldenrod!important;
 }
+
+
+.snackbar-danger{
+  background-color: red!important;
+  color: white!important;
+}

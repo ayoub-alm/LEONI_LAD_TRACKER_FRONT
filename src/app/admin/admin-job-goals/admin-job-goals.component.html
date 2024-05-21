@@ -1,25 +1,35 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 class="text-warning">Production jobs</h2>
+  <div #content
+       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h3 class="text-secondary">Production line goals</h3>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
-        <button type="button" (click)="addNewGoals()" class="btn btn-sm btn-outline-warning">
-          + Add New Goal
-        </button>
-        <button type="button" class="btn btn-sm btn-outline-warning">Export</button>
+        <button (click)="addNewGoals()" class="btn btn-sm btn-outline-secondary">Add</button>
+        <button (click)="printTable()" class="btn btn-sm btn-outline-secondary" type="button">Export</button>
       </div>
-      <button mat-icon-button [matMenuTriggerFor]="menu"  class="btn btn-warning btn-sm">
-        <mat-icon>more_vert</mat-icon>
+      <button [matMenuTriggerFor]="menu" color="primary" mat-raised-button>
+        <svg class="bi bi-menu-button-wide" fill="currentColor" height="16" viewBox="0 0 16 16"
+             width="16" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v2A1.5 1.5 0 0 1 14.5 5h-13A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5z"/>
+          <path
+            d="M2 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m10.823.323-.396-.396A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0M0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+        </svg>
       </button>
-
+    </div>
+  </div>
+  <div class="container">
+    <div class="d-flex justify-content-around p-3 m-2 ">
+      <input class="form-control shadow-sm" placeholder="search ">
+      <button class="mx-2" color="primary" mat-flat-button>Search</button>
     </div>
   </div>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="OnDelete()">
-      <mat-icon >delete</mat-icon>
+    <button (click)="OnDelete()" mat-menu-item>
+      <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>
-    <button mat-menu-item >
+    <button mat-menu-item>
       <mat-icon>update</mat-icon>
       <span>Update</span>
     </button>
@@ -29,45 +39,77 @@
     </button>
   </mat-menu>
 
-  <div class="table-responsive">
-    <table class="table table-striped table-hover table-sm">
-      <thead>
-      <tr>
-        <th></th>
-        <th scope="col">Harness Ref</th>
-        <th scope="col">Project</th>
-        <th scope="col">Family</th>
-        <th scope="col">Production line</th>
-        <th scope="col">Status</th>
-        <th scope="col">Demanded quantity</th>
-        <th scope="col">Delivered quantity</th>
-      </tr>
-      </thead>
-      <tbody>
-      <ng-container *ngFor="let JobGoal of jobGoals | async">
-        <tr>
-          <td>
-            <mat-checkbox
-              [checked]="checkedJob.getValue() === JobGoal.id"
-              (change)="Uncheck(JobGoal.id, $event)"
-            ></mat-checkbox>
-          </td>
-          <td><a href="javascript:;">{{JobGoal.ref}}</a></td>
-          <td>{{JobGoal.harness.project.name}}</td>
-          <td>{{JobGoal.harness.family}}</td>
-          <td>{{JobGoal.production_line.name}}</td>
-          <td [class]="JobGoal.status === 0 ? 'text-warning' : 'text-success'">
-            {{JobGoal.status === 0 ? 'Open' : 'Closed'}}
-          </td>
-          <td>{{JobGoal.demanded_quantity}}</td>
-          <td [classList]="[ JobGoal.delivered_quantity > 0 ? 'text-warning' : 'text-danger', 'fw-bolder']" class="fw-bolder">
-            {{JobGoal.delivered_quantity}}
-          </td>
-        </tr>
+
+  <div class="mat-elevation-z8 rounded-3">
+    <table #tableToPrint [dataSource]="dataSource" mat-table matSort>
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="checkbox">
+        <th *matHeaderCellDef mat-header-cell>--</th>
+        <td *matCellDef="let element" mat-cell>
+          <mat-checkbox
+            (change)="Uncheck(element.id, $event)"
+            [checked]="checkedJob.getValue() === element.id"
+            color="primary">
+          </mat-checkbox>
+        </td>
       </ng-container>
-      </tbody>
+
+      <!-- Reference Column -->
+      <ng-container matColumnDef="ref">
+        <th *matHeaderCellDef mat-header-cell> Harness Ref</th>
+        <td *matCellDef="let element" mat-cell> {{element.ref}} </td>
+      </ng-container>
+
+      <!-- Project Column -->
+      <ng-container matColumnDef="project">
+        <th *matHeaderCellDef mat-header-cell> Project</th>
+        <td *matCellDef="let element" mat-cell> {{element.harness.project.name}} </td>
+      </ng-container>
+
+      <!-- Family Column -->
+      <ng-container matColumnDef="family">
+        <th *matHeaderCellDef mat-header-cell> Family</th>
+        <td *matCellDef="let element" mat-cell> {{element.harness.family}} </td>
+      </ng-container>
+
+      <!-- Production Line Column -->
+      <ng-container matColumnDef="production_line">
+        <th *matHeaderCellDef mat-header-cell> Production line</th>
+        <td *matCellDef="let element" mat-cell> {{element.production_line.name}} </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell> Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <button class="{{element.status === 0 ? 'btn-sm btn btn-outline-warning' : 'btn btn-sm btn-outline-success'}}"
+                  disabled>
+            {{element.status === 0 ? 'Open' : 'Closed'}}
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Demanded Quantity Column -->
+      <ng-container matColumnDef="demanded_quantity">
+        <th *matHeaderCellDef mat-header-cell> Demanded quantity</th>
+        <td *matCellDef="let element" mat-cell> {{element.demanded_quantity}} </td>
+      </ng-container>
+
+      <!-- Delivered Quantity Column -->
+      <ng-container matColumnDef="delivered_quantity">
+        <th *matHeaderCellDef mat-header-cell> Delivered quantity</th>
+        <td *matCellDef="let element" [classList]="[element.delivered_quantity > 0 ? 'text-warning' : 'text-danger', 'fw-bolder']"
+            mat-cell>
+          {{element.delivered_quantity}}
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
     </table>
+
+    <mat-paginator #paginator [pageSizeOptions]="[5, 3, 10, 20, 100]" aria-label="Select page of periodic elements"
+                   showFirstLastButtons>
+    </mat-paginator>
   </div>
 </main>
-
-

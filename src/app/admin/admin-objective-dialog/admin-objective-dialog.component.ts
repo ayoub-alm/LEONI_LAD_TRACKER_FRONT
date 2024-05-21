@@ -31,11 +31,11 @@ export class AdminObjectiveDialogComponent implements OnInit{
   harnesses:BehaviorSubject<HarnessModel[]> = new BehaviorSubject<HarnessModel[]>([]);
   familys:BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   jobForm =  this.formBuilder.group({
-    productionLine: [''],
-    project: [''],
-    quantity: [''],
-    harness: [''],
-    family: ['']
+    productionLine: ['',Validators.required],
+    project: ['',Validators.required],
+    quantity: ['' ,Validators.required],
+    harness: ['',Validators.required],
+    family: ['',Validators.required]
   })
 
 
@@ -56,6 +56,12 @@ export class AdminObjectiveDialogComponent implements OnInit{
     this.jobForm.get('project')?.valueChanges.subscribe(project_id => {
       // Ensure project_id is not null before parsing it
       if (project_id !== null) {
+        // filter the production line and show it
+        this.productionLineService.getAll().pipe(
+          tap(value => {
+            console.log(value);
+            this.productionLines.next(value.filter(line => line.project_id.toString() == project_id ))
+          })).subscribe();
         // Filter the harnesses array based on the selected project ID
         this.harnessService.getHarnessByProjectId(parseInt(project_id))
           .subscribe(harnesses => {
@@ -79,7 +85,7 @@ export class AdminObjectiveDialogComponent implements OnInit{
       tap(value => this.projects.next(value))
     ).subscribe();
 
-    this.productionLineService.getAll().pipe(tap(value => this.productionLines.next(value))).subscribe();
+
     // this.harnessService.getAllHarnesses().pipe(tap(value => this.harnesses.next(value))).subscribe();
   }
 
@@ -88,8 +94,17 @@ export class AdminObjectiveDialogComponent implements OnInit{
   }
 
   OnSubmit() {
-    console.log(this.jobForm.getRawValue());
-    this.productionJobService.create(parseInt(<string>this.jobForm.getRawValue().harness),
+    if (this.jobForm.invalid) {
+      this.snakeBar.open("Check fields and retry", "OK", {
+        duration: 5000,
+        verticalPosition: "bottom",
+        horizontalPosition: "center",
+        panelClass: "danger-snackBar"
+      });
+      return;
+    }
+    this.productionJobService.create(parseInt(
+      <string>this.jobForm.getRawValue().harness),
       parseInt(<string>this.jobForm.getRawValue().quantity),
       parseInt(<string> this.jobForm.getRawValue().productionLine),
       parseInt(<string>this.jobForm.getRawValue().project)).subscribe(value => {
