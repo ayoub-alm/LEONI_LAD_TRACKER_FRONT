@@ -44,7 +44,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <mat-card class="example-card">
           <mat-card-header>
             <mat-card-title class="blue-color">
@@ -86,8 +86,9 @@
                     <div class="col-4">
                       <label class="col-form-label">img</label>
                       <input class="form-control"
-                             [disabled]="true"
-                             formControlName="{{post.name +'#'+ field.name+'#'+'img'}}" type="file" placeholder="choose image">
+                             (change)="onFileChange($event,  post.name +'#'+ field.name+'#'+'img')"
+                              type="file" placeholder="choose image">
+                             <input type="hidden" formControlName="{{post.name +'#'+ field.name+'#'+'img'}}" >
                     </div>
                     <div class="col-4 mb-2">
                       <label class="col-form-label">pre-fix</label>
@@ -103,63 +104,95 @@
               </mat-expansion-panel>
 
 <!--**************************** packaging section  ****************************************-->
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-box " viewBox="0 0 16 16">
-                      <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z"/>
-                    </svg> <span class="m-2">Package</span>
-                  </mat-panel-title>
-                  <mat-panel-description>
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <form class="row" >
-                  <div class="col-6 mb-2">
-                    <mat-checkbox
-                      [disabled]="true"
-                      formControlName="packaging#HarnessRef"
-                      color="primary" >
-                      Harness reference
-                    </mat-checkbox>
-                  </div>
-                  <div class="col-6 mb-2">
-                    <input type="text" class="form-control col-6">
-                  </div>
-                  <div class="col-6 mb-2">
-                    <mat-checkbox
-                       formControlName="packaging#packageBarCode"
-                      color="primary" >
-                      Package reference
-                    </mat-checkbox>
-                  </div>
-                  <div class="col-6 mb-2">
-                    <input type="text" class="form-control col-6">
-                  </div>
-
-                  <div class="col-6 mb-2">
-                    <mat-checkbox
-                      formControlName="packaging#packageQuantity"
-                      color="primary" >
-                      Quantity
-                    </mat-checkbox >
-                  </div>
-                  <div class="col-6 mb-2">
-                    <input type="text" class="form-control col-6">
-                  </div>
+<!--              <mat-expansion-panel>-->
+<!--                <mat-expansion-panel-header>-->
+<!--                  <mat-panel-title>-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-box " viewBox="0 0 16 16">-->
+<!--                      <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z"/>-->
+<!--                    </svg> <span class="m-2">Package</span>-->
+<!--                  </mat-panel-title>-->
+<!--                  <mat-panel-description>-->
+<!--                  </mat-panel-description>-->
+<!--                </mat-expansion-panel-header>-->
+<!--                <form class="row" >-->
+<!--                  <div class="col-4 mb-2">-->
+<!--                    <mat-checkbox-->
+<!--                      [disabled]="true"-->
+<!--                      formControlName="packaging#HarnessRef"-->
+<!--                      color="primary" >-->
+<!--                      Harness reference-->
+<!--                    </mat-checkbox>-->
+<!--                  </div>-->
+<!--                  <div class="col-4 mb-2">-->
+<!--                    <label class="form-label"> image</label>-->
+<!--                    <input type="file" class="form-control" formControlName="packaging#HarnessRef#img">-->
+<!--                  </div>-->
+<!--                  <div class="col-4 mb-2">-->
+<!--                    <label class="form-label"> pre-fix</label>-->
+<!--                    <input type="text" class="form-control col-4" formControlName="packaging#HarnessRef#pre-fix">-->
+<!--                  </div>-->
+<!--                  <hr>-->
 
 
-                  <div class="col-6 mb-2">
-                    <mat-checkbox
-                      formControlName="packaging#packageSize"
-                      color="primary" >
-                      Package size
-                    </mat-checkbox>
-                  </div>
-                  <div class="col-6 mb-2">
-                    <input  type="text" class="form-control col-6">
-                  </div>
-                </form>
-              </mat-expansion-panel>
+<!--                  <div class="col-12 row mt-2">-->
+<!--                    <div class="col-4">-->
+<!--                      <mat-checkbox-->
+<!--                        formControlName="packaging#packageBarCode"-->
+<!--                        color="primary" >-->
+<!--                        Package reference-->
+<!--                      </mat-checkbox>-->
+<!--                    </div>-->
+<!--                    <div class="col-4">-->
+<!--                      <label class="form-label">Image</label>-->
+<!--                      <input class="form-control" type="file" formControlName="packaging#packageBarCode#img">-->
+<!--                    </div>-->
+<!--                    <div class="col-4">-->
+<!--                      <label class="form-label">Pre-fix</label>-->
+<!--                      <input class="form-control" type="text" formControlName="packaging#packageBarCode#pre-fix">-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <hr>-->
+
+<!--                  <div class="col-12 row mt-2">-->
+<!--                    <div class="col-4 mb-2">-->
+<!--                      <mat-checkbox-->
+<!--                        formControlName="packaging#packageQuantity"-->
+<!--                        color="primary" >-->
+<!--                        Quantity-->
+<!--                      </mat-checkbox >-->
+<!--                    </div>-->
+<!--                    <div class="col-4">-->
+<!--                      <label class="form-label">image</label>-->
+<!--                      <input type="file" class="form-control" formControlName="packaging#packageQuantity#img">-->
+<!--                    </div>-->
+<!--                    <div class="col-4 mb-2">-->
+<!--                      <label class="form-label">pre-fix</label>-->
+<!--                      <input type="text" class="form-control col-6" formControlName="packaging#packageQuantity#pre-fix">-->
+<!--                    </div>-->
+<!--                  </div>-->
+
+
+<!--                 <div class="col-12 row">-->
+<!--                   <div class="col-4 mb-2">-->
+<!--                     <mat-checkbox-->
+<!--                       formControlName="packaging#packageSize"-->
+<!--                       color="primary" >-->
+<!--                       Package size-->
+<!--                     </mat-checkbox>-->
+<!--                   </div>-->
+<!--                   <div class="col-4">-->
+<!--                     <label class="form-label">image</label>-->
+<!--                     <input type="file" class="form-control"-->
+<!--                            (change)="onFileChange($event, 'ackaging#packageSize#img')"-->
+<!--                            formControlName="ackaging#packageSize#img">-->
+<!--                   </div>-->
+<!--                   <div class="col-4">-->
+<!--                     <label class="form-label">pre-fix</label>-->
+<!--                     <input type="text" class="form-control" formControlName="ackaging#packageSize#pre-fix">-->
+<!--                   </div>-->
+<!--                 </div>-->
+<!--                </form>-->
+<!--              </mat-expansion-panel>-->
 
 
 
@@ -168,7 +201,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <mat-card class="example-card">
           <mat-card-header>
             <mat-card-title class="blue-color">Order</mat-card-title>
@@ -182,6 +215,10 @@
                       matBadge="{{field.order}}" matBadgeSize="medium">
                     <span class="text-success fw-bold">{{ field.name.split('#')[0] }}</span><br>
                     <span class="text-success"> - {{ field.name.split('#')[1] }}</span>
+                    <br>
+                   <p class="text-end">
+                     <img class="img-fluid  " src="{{field.img}}" style="max-height: 200px;">
+                   </p>
                   </li>
                 </ng-container>
               </ng-container>

@@ -49,7 +49,6 @@ export class PickerScanneComponent implements OnInit {
     private productionJobService: ProductionJobService,
     private prodHarnessService: ProdHarnessService,
     private pickerService: PickerService,
-    private formBuilder: FormBuilder,
     private _formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private datePipe: DatePipe) {
@@ -150,9 +149,9 @@ export class PickerScanneComponent implements OnInit {
 
   getCurrentData(): void {
     // get awaiting production job
-    this.productionJobService.getAwaitingProductionJobForLine(1).subscribe(value => this.productionJobs.next(value))
+    this.productionJobService.getAwaitingProductionJobForLine(2).subscribe(value => this.productionJobs.next(value))
     // get the current production job
-    this.pickerService.getCurrentJob(1).subscribe(
+    this.pickerService.getCurrentJob(2).subscribe(
       success => {
         this.currentJob.next(success)
       },
