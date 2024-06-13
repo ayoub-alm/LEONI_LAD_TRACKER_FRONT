@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {CreateProdHarnessDTO} from "../dtos/create-prod-harness.dto";
 import {Observable, tap} from "rxjs";
-import {ProductionJob} from "../models/production-job.model";
 import {ProductionHarnessModel} from "../models/production.harness.model";
 
 @Injectable({
@@ -33,6 +32,13 @@ export class ProdHarnessService{
           prodHarness.range_time,prodHarness.production_job))
       })
     )
+  }
 
+  getByRef(ref: string): Observable<ProductionHarnessModel>{
+     return this.http.get<ProductionHarnessModel>(`${this.apiUrl}/prod-harness/uuid/${ref}`).pipe(
+      tap((prodHarness: ProductionHarnessModel) => {
+        return new ProductionHarnessModel(prodHarness.id, prodHarness.uuid, prodHarness.range_time, prodHarness.production_job);
+      })
+    );
   }
 }

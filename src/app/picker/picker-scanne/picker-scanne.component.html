@@ -1,32 +1,32 @@
 <div class="container-fluid bg-light" style="height: 100vh;">
 
   <div class="raw  d-flex justify-content-around" *ngIf="!(noWorkAvailable | async)">
-    <div class="card col-2 mt-3 bg-light ">
-      <div class="card-body bg-light" >
-        <p>Production line: <span class="blue-color"> Lad 1 </span></p>
-        <p>Operator: <span class="blue-color"> 987456</span></p>
+    <div class="glass col-2 mt-3">
+      <div class="card-body glass p-3 " >
+        <p class="light-blue-color">Production line: <span class="orange-color fw-blod"> Lad 1 </span></p>
+        <p class="light-blue-color">Operator: <span class="orange-color fw-blod"> 987456</span></p>
         <hr>
-        <p>project: <span class="blue-color">{{currentJob.getValue().harness.project.name}}</span></p>
-        <p>Family: <span class="blue-color">{{currentJob.getValue().harness.family}}</span></p>
-        <p>Current Reference: <span class="blue-color">{{currentJob.getValue().harness.ref}}</span></p>
+        <p class="light-blue-color">project: <span class="orange-color fw-blod">{{currentJob.getValue().harness.project.name}}</span></p>
+        <p class="light-blue-color">Family: <span class="orange-color fw-blod">{{currentJob.getValue().harness.family}}</span></p>
+        <p>Current Reference: <span class="blue-color fw-blod" style="font-size: 1.2rem;">{{currentJob.getValue().harness.ref}}</span></p>
         <hr>
-        <p>To be delivered: <span class="blue-color fw-bolder">{{currentJob.getValue().demanded_quantity}}</span>
+        <p class="light-blue-color">To be delivered: <span class="orange-color fw-blod fw-bolder">{{currentJob.getValue().demanded_quantity}}</span></p>
+        <p class="light-blue-color">Delivered: <span class="text-success fw-blod fw-bolder">{{currentJob.getValue().delivered_quantity}}</span></p>
+        <p class="light-blue-color">Rest: <span
+          class="text-warning fw-blod fw-bolder">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
         </p>
-        <p>Delivered: <span class="blue-color fw-bolder">{{currentJob.getValue().delivered_quantity}}</span></p>
-        <p>Rest: <span
-          class="blue-color fw-bolder">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
-        </p>
+        <canvas #gaugeChart class=""></canvas>
       </div>
     </div>
 
 
-    <div class="card col-7 mt-3 ml-2 ">
-      <div class="card-body">
+    <div class=" col-7 mt-3 ml-2 ">
+      <div class="card-body glass h-75">
         <!--        <button mat-raised-button (click)="isEditable = !isEditable">-->
         <!--          {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}-->
         <!--        </button>-->
 
-        <mat-stepper #stepper linear>
+        <mat-stepper #stepper linear class="glass h-100">
           <mat-step (keydown)="nextStepEnter($event)" [editable]="isEditable">
             <ng-template matStepLabel>Press Enter</ng-template>
             <div class="text-center">
@@ -85,7 +85,7 @@
             <ng-template matStepLabel>Done</ng-template>
             <div class="text-center">
               <div class="text-center">
-                <h2 class="blue-color text-success mt-3">
+                <h2 class="orange-color fw-blod text-success mt-3">
                   Completed with success
                 </h2>
                 <br>
@@ -98,19 +98,20 @@
       </div>
     </div>
 
-    <div class="card col-2 mt-3  bg-light">
-      <div class="card-body">
-        <p> Awaiting jobs: <span class="fw-bolder orange-color">{{ productionJobs.getValue().length }} </span></p>
+    <div class="card col-2 mt-3 glass ">
+      <div class="card-body light-blue-color glass" style="height: 80vh">
+        <p class="light-blue-color "> Awaiting jobs: <span class="fw-bolder orange-color">{{ productionJobs.getValue().length }} </span></p>
         <p>
           <ng-container *ngFor="let pr of productionJobs.getValue().slice(0,10)">
-            <li class="list-group-item blue-color " style="color: #0dcaf0">{{pr.harness.ref}}
+            <li class="light-blue-color list-group-item  fw-blod " style="color: #0dcaf0">{{pr.harness.ref}}
               <sup class="text-dark">{{pr.demanded_quantity}} Unit</sup></li>
           </ng-container>
           <span class="text-dark" *ngIf="productionJobs.getValue().length > 10"> +{{  productionJobs.getValue().length - 10 }} Item</span>
         </p>
         <hr>
-        <p>Date: <span class="text-dark"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
-        <p>Current Time:<span class="text-dark">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
+
+        <p class="light-blue-color ">Date: <span class="orange-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
+        <p class="light-blue-color ">Time: <span class="orange-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
 
       </div>
     </div>

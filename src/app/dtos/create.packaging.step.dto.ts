@@ -7,6 +7,9 @@ export class PackagingStepDTO {
   img:string;
   order: number;
   name: string = "";
+  next_step_on_success: number | undefined;
+  next_step_on_failure: number | undefined;
+  condition: boolean | undefined;
 
   constructor(data: Partial<PackagingStepDTO> = {}) {
     this.preFix = data.preFix ?? '';
@@ -17,5 +20,8 @@ export class PackagingStepDTO {
     this.img = data.img ?? "";
     this.order = data.order ?? 0;
     this.name = data.name ?? "";
+    this.condition = data.condition ?? false;
+    this.next_step_on_failure = data.next_step_on_failure ?? undefined;
+    this.next_step_on_success = data.next_step_on_success ?? undefined;
   }
 }

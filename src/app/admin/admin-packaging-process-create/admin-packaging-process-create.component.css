@@ -56,12 +56,3 @@ li{
 
 }
 
-li :hover{
-  background-color: rgba(169, 201, 255, 0.6) !important;
-  cursor: row-resize;
-  color: black!important;
-  box-shadow: 2px 2px 3px black;
-}
-.test:hover ul{
-  background-color: rgba(173, 216, 230, 0.6);
-}

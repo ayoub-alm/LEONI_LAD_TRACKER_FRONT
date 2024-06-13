@@ -1,39 +1,40 @@
-<div class="container-fluid bg-light" style="height: 100vh;">
-
-  <div class="raw  d-flex justify-content-around" >
-    <div class="card col-2 mt-3 bg-light ">
-      <div class="card-body bg-light" >
-        <p>Production line: <span class="blue-color"> Lad 1 </span></p>
-        <p>Operator: <span class="blue-color"> 987456</span></p>
+<div class="container-fluid bg-light h-100" >
+  <div class="raw  d-flex justify-content-around h-100" >
+    <div class=" col-2 mt-3  bk-glass-blue  ">
+      <div class="glass card p-2 h-100" >
+        <p><span class="light-blue-color">Production line:</span> <span class="orange-color"> Lad 1 </span></p>
+        <p><span class="light-blue-color">Operator:</span>  <span class="orange-color"> 987456</span></p>
         <hr>
-        <p>project: <span class="blue-color"></span></p>
-        <p>Family: <span class="blue-color"></span></p>
+        <p class="light-blue-color">project: <span class="orange-color"></span></p>
+        <p class="light-blue-color">Family: <span class="orange-color"></span></p>
+        <p class="light-blue-color">Current Reference: <span class="orange-color">1233654</span></p>
         <hr>
         <p>Current Box: <span class="blue-color">{{packagingBox.getValue().barcode }}</span></p>
-        <p>Qantity: <span class="blue-color fw-bolder">{{packagingBox.getValue().quantity }}</span>
-        </p>
-        <p>Picked: <span class="blue-color fw-bolder"></span></p>
-        <p>Rest: <span
-          class="blue-color fw-bolder"></span>
-        </p>
+<!--        <p>Qantity: <span class="blue-color fw-bolder">{{packagingBox.getValue().quantity }}</span>-->
+<!--        </p>-->
+<!--        <p>Picked: <span class="blue-color fw-bolder">{{delivredQuantity.getValue()}}</span></p>-->
+<!--        <p>Rest: <span-->
+<!--          class="blue-color fw-bolder"></span>-->
+<!--        </p>-->
+        <canvas #myPieChart></canvas>
       </div>
     </div>
 
 
-    <div class="card col-8 mt-3 px-3">
-      <div class="d-flex justify-content-around mt-2">
-        <p>Current Box: <span class="orange-color">{{packagingBox.getValue().barcode }}</span></p>
-        <p>Qantity: <span class="orange-color fw-bolder">{{packagingBox.getValue().quantity }}</span>
+    <div class="glass col-7 mt-3 px-3">
+      <div class="d-flex justify-content-around mt-3">
+        <p class="light-blue-color">Current Box: <span class="orange-color">{{packagingBox.getValue().barcode }}</span></p>
+        <p class="light-blue-color">Qantity: <span class="orange-color fw-bolder">{{packagingBox.getValue().quantity }}</span>
         </p>
-        <p>Picked: <span class="blue-color fw-bolder"></span></p>
-        <p>Rest: <span
+        <p class="light-blue-color">Picked: <span class="blue-color fw-bolder">{{delivredQuantity.getValue()}}</span></p>
+        <p class="light-blue-color">Rest :<span class="blue-color fw-bolder">{{packagingBox.getValue().quantity - delivredQuantity.getValue()}}</span> <span
           class="blue-color fw-bolder"></span>
         </p>
       </div>
 
-      <div class="card-body mt-3 " >
+      <div class="card-body m-3 glass " >
         <form  class="mt-2"  [formGroup]="packagingForm">
-        <mat-stepper #stepper  [linear]="true" headerPosition="bottom" class="border-primary">
+        <mat-stepper #stepper [selectedIndex]="activeStep.getValue()"  [linear]="true" headerPosition="bottom"  class="border-primary">
           <mat-step [editable]="isEditable" >
             <ng-template matStepLabel>Press Enter</ng-template>
             <div class="text-center" style="height:50vh!important;">
@@ -43,175 +44,43 @@
             </div>
           </mat-step>
 
-
-
+          <ng-container *ngFor="let step of packagingStepsAll.getValue()">
             <mat-step [editable]="isEditable" >
-              <ng-template matStepLabel>Harness</ng-template>
-              <div class="row">
-                <div class="col-7">
-                  <p class="text-center ">
-                    <img class="img-fluid" src="assets/images/packaging/harness_reference.jpg" >
-                  </p>
-                </div>
-                <div class="col-5 d-flex flex-column justify-content-center">
-                  <h5 class="card-title blue-color ">Scan the harness reference</h5>
-<!--                  <form  class="mt-2">-->
+<!--              <ng-template matStepLabel class="orange-bg-color">{{step.description}}</ng-template>-->
+              <div class="row ">
+                <div class="col-5 my-auto mx-auto ">
+                  <h2 class="card-title orange-color fw-light col-12 ">{{step.description}}</h2>
+                  <div class="col-12 d-flex flex-column justify-content-center mt-5">
                     <input autofocus class="form-control border-2 border-primary"
-                           formControlName="harnessReference"  id="1CtrlInput"
+                           formControlName="{{step.name}}"  [id]="'step'+step.order.toString()"
                            required>
-<!--                  </form>-->
+                  </div>
+                </div>
+
+                <div class="col-7">
+                  <p class="text-center">
+                    <img class="img-fluid" [src]="step.img"  alt="">
+                  </p>
                 </div>
               </div>
             </mat-step>
-
-          <mat-step [editable]="isEditable" >
-            <ng-template matStepLabel>Package barcode</ng-template>
-            <div class="row">
-              <div class="col-7">
-                <p class="text-center ">
-                  <img class="img-fluid" src="assets/images/packaging/box_bar_code.jpg" >
-                </p>
-              </div>
-              <div class="col-5 d-flex flex-column justify-content-center">
-                <h5 class="card-title blue-color ">Scan the package barcode</h5>
-
-                  <input autofocus class="form-control border-2 border-primary"
-                         formControlName="boxReference" id="2CtrlInput"
-                         required (keydown.enter)="stepper.next()">
-
-              </div>
-            </div>
-          </mat-step>
-
-          <mat-step [editable]="isEditable" >
-            <ng-template matStepLabel>Quantity </ng-template>
-            <div class="row">
-              <div class="col-7">
-                <p class="text-center ">
-                  <img class="img-fluid" src="assets/images/packaging/quantity_bar_code.jpg">
-                </p>
-              </div>
-              <div class="col-5 d-flex flex-column justify-content-center">
-                <h5 class="card-title blue-color ">Scan the quantity barcode</h5>
-<!--                <form  class="mt-2">-->
-                  <input autofocus class="form-control border-2 border-primary"
-                         formControlName="boxQuantity" id="3CtrlInput"
-                         required>
-<!--                </form>-->
-              </div>
-            </div>
-          </mat-step>
-
-<!--          <mat-step [editable]="isEditable" >-->
-<!--            <ng-template matStepLabel>PTA 1</ng-template>-->
-<!--            <div class="row">-->
-<!--              <div class="col-7">-->
-<!--                <p class="text-center ">-->
-<!--                  <img class="img-fluid" src="assets/images/packaging/prodected_hareness_bar_code.jpg" >-->
-<!--                </p>-->
-<!--              </div>-->
-<!--              <div class="col-5 d-flex flex-column justify-content-center">-->
-<!--                <h5 class="card-title blue-color ">Scan the <span class="text-warning">PTA </span> FX reference</h5>-->
-<!--&lt;!&ndash;                <form  class="mt-2">&ndash;&gt;-->
-<!--                  <input autofocus class="form-control border-2 border-primary"-->
-
-<!--                         required>-->
-<!--&lt;!&ndash;                </form>&ndash;&gt;-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </mat-step>-->
-
-<!--          <mat-step [editable]="isEditable" >-->
-<!--            <ng-template matStepLabel>PTA 2</ng-template>-->
-<!--            <div class="row">-->
-<!--              <div class="col-7">-->
-<!--                <p class="text-center ">-->
-<!--                  <img class="img-fluid" src="assets/images/packaging/prodected_hareness_bar_code.jpg" >-->
-<!--                </p>-->
-<!--              </div>-->
-<!--              <div class="col-5 d-flex flex-column justify-content-center">-->
-<!--                <h5 class="card-title blue-color ">Scan the <span class="text-warning">PTA counter</span> barcode</h5>-->
-<!--                <form  class="mt-2">-->
-<!--                  <input autofocus class="form-control border-2 border-primary"-->
-
-<!--                         required>-->
-<!--                </form>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </mat-step>-->
-
-
-<!--          <mat-step [editable]="isEditable" >-->
-<!--          <ng-template matStepLabel>BOL 1</ng-template>-->
-<!--          <div class="row">-->
-<!--            <div class="col-7">-->
-<!--              <p class="text-center ">-->
-<!--                <img class="img-fluid" src="assets/images/packaging/prodected_hareness_bar_code.jpg" >-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="col-5 d-flex flex-column justify-content-center">-->
-<!--              <h5 class="card-title blue-color ">Scan the <span class="text-warning">BOL</span> FX reference</h5>-->
-<!--              <form  class="mt-2">-->
-<!--                <input autofocus class="form-control border-2 border-primary"-->
-
-<!--                       required>-->
-<!--              </form>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </mat-step>-->
-
-
-<!--          <mat-step [editable]="isEditable" >-->
-<!--            <ng-template matStepLabel>BOL 2</ng-template>-->
-<!--            <div class="row">-->
-<!--              <div class="col-7">-->
-<!--                <p class="text-center ">-->
-<!--                  <img class="img-fluid" src="assets/images/packaging/prodected_hareness_bar_code.jpg" >-->
-<!--                </p>-->
-<!--              </div>-->
-<!--              <div class="col-5 d-flex flex-column justify-content-center">-->
-<!--                <h5 class="card-title blue-color ">Scan the <span class="text-warning">BOL counter </span>barcode</h5>-->
-<!--                <form  class="mt-2">-->
-<!--                  <input autofocus class="form-control border-2 border-primary"-->
-
-<!--                         required>-->
-<!--                </form>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </mat-step>-->
-
-
-
-
-<!--          <mat-step [editable]="isEditable" >-->
-<!--            <ng-template matStepLabel>Scan the Bol </ng-template>-->
-<!--            <div class="row">-->
-<!--              <div class="col-7">-->
-<!--                <p class="text-center ">-->
-<!--                  <img class="img-fluid" src="assets/images/steps/lableScanner.png" width="300px">-->
-<!--                </p>-->
-<!--              </div>-->
-<!--              <div class="col-5 d-flex flex-column justify-content-center">-->
-<!--                <h4 class="card-title ">Scan the Harness reference</h4>-->
-<!--                <form  class="mt-2">-->
-<!--                  <input autofocus class="form-control border-2 border-primary"-->
-
-<!--                         required>-->
-<!--                </form>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </mat-step>-->
+          </ng-container>
 
           <mat-step>
             <ng-template matStepLabel>Done</ng-template>
-            <div class="text-center">
-              <div class="text-center">
-                <h2 class="blue-color text-success mt-3">
-                  Completed with success
-                </h2>
-                <br>
-                <img src="/assets/images/steps/done.webp" class="img-fluid" width="200px">
-                <br>
+            <div class="row">
+              <div class="col-7">
+                <p class="text-center ">
+                  <img class="img-fluid" src="assets/images/steps/lableScanner.png" width="300px">
+                </p>
+              </div>
+              <div class="col-5 d-flex flex-column justify-content-center">
+                <h4 class="card-title orange-color display-6 ">Scan the lable</h4>
+                <form  class="mt-2">
+                  <input autofocus class="form-control border-2 border-primary"
+                         id="2CtrlInput"
+                         required>
+                </form>
               </div>
             </div>
           </mat-step>
@@ -220,13 +89,16 @@
       </div>
     </div>
 
-    <div class="card col-2 mt-3  bg-light">
-      <div class="card-body">
+    <div class="bk-glass-orange col-2 mt-3 p-3 ">
+      <div class="">
         <p> Delivered packages </p>
-        <p>
-
-        </p>
         <hr>
+        <p class="orange-color">Date: <span class="light-blue-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
+        <p class="orange-color">Time:<span class="light-blue-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
+        <hr>
+        <div class="" style="height: 300px;">
+          <canvas id="myChart2"></canvas>
+        </div>
 <!--        <p>Date: <span class="text-dark"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>-->
 <!--        <p>Current Time:<span class="text-dark">{{ currentTime | date: 'HH:mm:ss' }}</span></p>-->
 

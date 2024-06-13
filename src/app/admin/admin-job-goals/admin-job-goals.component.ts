@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 import { MatDialog } from "@angular/material/dialog";
 import { AdminObjectiveDialogComponent } from "../admin-objective-dialog/admin-objective-dialog.component";
 import { ProductionJobService } from "../../services/production.job.service";
-import { BehaviorSubject, tap } from "rxjs";
+import {BehaviorSubject, tap, window} from "rxjs";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
@@ -15,6 +15,8 @@ import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSortModule} from "@angular/material/sort";
 import {MatChipsModule} from "@angular/material/chips";
+
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-admin-job-goals',
@@ -29,7 +31,7 @@ export class AdminJobGoalsComponent implements OnInit, AfterViewInit {
   jobGoals: BehaviorSubject<ProductionJob[]> = new BehaviorSubject<ProductionJob[]>([]);
   checkedJob: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   dataSource!: MatTableDataSource<ProductionJob>;
-  displayedColumns: string[] = ['checkbox', 'ref', 'project', 'family', 'production_line', 'status', 'demanded_quantity', 'delivered_quantity'];
+  displayedColumns: string[] = ['checkbox', 'ref', 'project', 'family', 'production_line', 'status', 'demanded_quantity', 'delivered_quantity','order','progress'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('content') content!: ElementRef;
@@ -49,9 +51,7 @@ export class AdminJobGoalsComponent implements OnInit, AfterViewInit {
     ).subscribe();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
+
 
   addNewGoals() {
     const dialogRef = this.dialogRef.open(AdminObjectiveDialogComponent, {
@@ -87,7 +87,55 @@ export class AdminJobGoalsComponent implements OnInit, AfterViewInit {
     // let originalContents = document.body.innerHTML;
     //
     // document.body.innerHTML = printContents;
-    window.print();
+    // window.print();
     // document.body.innerHTML = originalContents;
+  }
+
+
+
+  OnChangeOrder() {
+    alert(this.checkedJob.value.toString())
+  }
+
+    ngAfterViewInit(): void {
+      this.jobGoals.getValue().forEach((data, index) => {
+        const ctx = document.getElementById('chart' + index) as HTMLCanvasElement;
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            datasets: [{
+              data: [data.delivered_quantity, data.delivered_quantity],
+              backgroundColor: [
+                'rgb(54, 162, 235)',
+                'rgb(255, 165, 0)'  // Orange
+              ],
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              tooltip: {
+                enabled: true
+              }
+            }
+          }
+        });
+      });
+    }
+
+  getPercentageColor(data: number): string {
+    if (data < 35) {
+      return 'text-danger fw-bolder';
+    } else if (data >= 35 && data < 70) {
+      return 'text-warning fw-bolder';
+    } else if (data >= 70) {
+      return 'text-success  fw-bold';
+    } else {
+      return 'text-secondary fw-bolder';
+    }
   }
 }

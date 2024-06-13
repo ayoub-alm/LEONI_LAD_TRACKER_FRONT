@@ -13,6 +13,7 @@ export class ProductionJob {
   project: ProjectModel;
   production_line: ProductionLineModel;
   harness: HarnessModel;
+  order: number;
 
 
   constructor(data: any) {
@@ -26,5 +27,6 @@ export class ProductionJob {
     this.project  = data.project;
     this.production_line = data.production_line
     this.harness = data.harness
+    this.order = data.order
   }
 }

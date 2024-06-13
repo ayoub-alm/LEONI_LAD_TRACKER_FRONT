@@ -1,13 +1,13 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div #content
        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h3 class="text-secondary">Production line goals</h3>
+    <h3 class="orange-color">Production line goals</h3>
     <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group me-2">
-        <button (click)="addNewGoals()" class="btn btn-sm btn-outline-secondary">Add</button>
-        <button (click)="printTable()" class="btn btn-sm btn-outline-secondary" type="button">Export</button>
-      </div>
-      <button [matMenuTriggerFor]="menu" color="primary" mat-raised-button>
+<!--      <div class="btn-group me-2">-->
+<!--        <button (click)="addNewGoals()" class="btn btn-sm btn-outline-secondary">Add</button>-->
+<!--        <button (click)="printTable()" class="btn btn-sm btn-outline-secondary" type="button">Export</button>-->
+<!--      </div>-->
+      <button [matMenuTriggerFor]="menu"  class="btn orange-bg-color btn-sm text-white">
         <svg class="bi bi-menu-button-wide" fill="currentColor" height="16" viewBox="0 0 16 16"
              width="16" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -20,11 +20,15 @@
   </div>
   <div class="container">
     <div class="d-flex justify-content-around p-3 m-2 ">
-      <input class="form-control shadow-sm" placeholder="search ">
-      <button class="mx-2" color="primary" mat-flat-button>Search</button>
+      <input class="form-control shadow-sm border-info border-1 shadow-sm" placeholder="search ">
+      <button class="mx-2 btn-info text-white btn btn-sm shadow-sm" >Search</button>
     </div>
   </div>
   <mat-menu #menu="matMenu">
+    <button (click)="addNewGoals()"  mat-menu-item>
+      <mat-icon>add</mat-icon>
+      <span>Add</span>
+    </button>
     <button (click)="OnDelete()" mat-menu-item>
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
@@ -37,16 +41,20 @@
       <mat-icon>content_copy</mat-icon>
       <span>Duplicate</span>
     </button>
+    <button (click)="OnChangeOrder()" mat-menu-item>
+      <mat-icon>order</mat-icon>
+      <span>Order</span>
+    </button>
+
   </mat-menu>
-
-
-  <div class="mat-elevation-z8 rounded-3">
-    <table #tableToPrint [dataSource]="dataSource" mat-table matSort>
+  <div class="mat-elevation-z8 rounded-3 shadow-sm" >
+    <table #tableToPrint [dataSource]="dataSource" mat-table matSort >
       <!-- Checkbox Column -->
-      <ng-container matColumnDef="checkbox">
-        <th *matHeaderCellDef mat-header-cell>--</th>
-        <td *matCellDef="let element" mat-cell>
+      <ng-container matColumnDef="checkbox" class="m-0 p-0">
+        <th *matHeaderCellDef mat-header-cell class="blue-color">--</th>
+        <td *matCellDef="let element" mat-cell  class="m-0 p-0">
           <mat-checkbox
+            class="m-0 p-0"
             (change)="Uncheck(element.id, $event)"
             [checked]="checkedJob.getValue() === element.id"
             color="primary">
@@ -56,33 +64,33 @@
 
       <!-- Reference Column -->
       <ng-container matColumnDef="ref">
-        <th *matHeaderCellDef mat-header-cell> Harness Ref</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Harness Ref</th>
         <td *matCellDef="let element" mat-cell> {{element.ref}} </td>
       </ng-container>
 
       <!-- Project Column -->
       <ng-container matColumnDef="project">
-        <th *matHeaderCellDef mat-header-cell> Project</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Project</th>
         <td *matCellDef="let element" mat-cell> {{element.harness.project.name}} </td>
       </ng-container>
 
       <!-- Family Column -->
       <ng-container matColumnDef="family">
-        <th *matHeaderCellDef mat-header-cell> Family</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Family</th>
         <td *matCellDef="let element" mat-cell> {{element.harness.family}} </td>
       </ng-container>
 
       <!-- Production Line Column -->
       <ng-container matColumnDef="production_line">
-        <th *matHeaderCellDef mat-header-cell> Production line</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Production line</th>
         <td *matCellDef="let element" mat-cell> {{element.production_line.name}} </td>
       </ng-container>
 
       <!-- Status Column -->
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell> Status</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Status</th>
         <td *matCellDef="let element" mat-cell>
-          <button class="{{element.status === 0 ? 'btn-sm btn btn-outline-warning' : 'btn btn-sm btn-outline-success'}}"
+          <button class="{{element.status === 0 ? ' btn btn-outline-warning btn-sm' : 'btn btn-sm btn-outline-success btn-sm' }}"
                   disabled>
             {{element.status === 0 ? 'Open' : 'Closed'}}
           </button>
@@ -91,25 +99,51 @@
 
       <!-- Demanded Quantity Column -->
       <ng-container matColumnDef="demanded_quantity">
-        <th *matHeaderCellDef mat-header-cell> Demanded quantity</th>
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Demanded quantity</th>
         <td *matCellDef="let element" mat-cell> {{element.demanded_quantity}} </td>
       </ng-container>
 
       <!-- Delivered Quantity Column -->
+<!--      <ng-container matColumnDef="delivered_quantity">-->
+<!--        <th *matHeaderCellDef mat-header-cell class="text-info">Delivered quantity</th>-->
+<!--        <td *matCellDef="let element" -->
+<!--            mat-cell>-->
+<!--          {{element.delivered_quantity}}-->
+<!--        </td>-->
+<!--      </ng-container>-->
+
+      <!-- Order -->
       <ng-container matColumnDef="delivered_quantity">
-        <th *matHeaderCellDef mat-header-cell> Delivered quantity</th>
-        <td *matCellDef="let element" [classList]="[element.delivered_quantity > 0 ? 'text-warning' : 'text-danger', 'fw-bolder']"
-            mat-cell>
-          {{element.delivered_quantity}}
+        <th *matHeaderCellDef mat-header-cell class="blue-color">Delivered Quantity</th>
+        <td *matCellDef="let element" mat-cell >
+          <span [classList]="[element.delivered_quantity > 0 ? 'text-warning' : 'text-danger', 'fw-bolder']">
+            {{element.delivered_quantity}}
+          </span>
         </td>
       </ng-container>
 
+      <!-- Order -->
+      <ng-container matColumnDef="order">
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> Order In Line</th>
+        <td *matCellDef="let element" mat-cell> {{element.order}} </td>
+      </ng-container>
+      <!--  data     -->
+      <ng-container matColumnDef="progress">
+        <th *matHeaderCellDef mat-header-cell class="blue-color"> progress</th>
+        <td *matCellDef="let element" mat-cell [class]="getPercentageColor(element.delivered_quantity / element.demanded_quantity * 100)">
+          {{element.delivered_quantity / element.demanded_quantity * 100}} %
+        </td>
+      </ng-container>
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
       <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
     </table>
 
-    <mat-paginator #paginator [pageSizeOptions]="[5, 3, 10, 20, 100]" aria-label="Select page of periodic elements"
+    <mat-paginator style="position: absolute; bottom: 10px;" #paginator [pageSizeOptions]="[5, 3, 10, 20, 100]" aria-label="Select page of periodic elements"
                    showFirstLastButtons>
     </mat-paginator>
   </div>
+
+  <canvas [id]="'myChart1'"></canvas>
+  <canvas [id]="'myChart2'"></canvas>
+  <canvas [id]="'myChart3'"></canvas>
 </main>

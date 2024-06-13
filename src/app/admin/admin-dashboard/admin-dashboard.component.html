@@ -1,13 +1,63 @@
-<main class="pt-3">
-  <div class="container pl-5">
-    <div class="row pl-5 ">
-      <div class="col-2"></div>
-      <div class="col-5">
-        <canvas id="myChart"></canvas>
-      </div>
-      <div class="col-5">
-        <canvas id="myChart2"></canvas>
-      </div>
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 ">
+  <div #content
+       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h3 class="orange-color">Dashboard</h3>
+    <div class="btn-toolbar mb-2 mb-md-0">
     </div>
+  </div>
+  <div class="container-fluid pl-2 ">
+    <div class="row pl-5 p-3 d-flex justify-content-around ">
+      <mat-card class="col-5 mt-2  bk-glass-blue">
+        <mat-card-title class="orange-color text-center fw-light">
+          Harness per line
+        </mat-card-title>
+        <mat-card-content>
+          <div >
+            <canvas id="myChart"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="col-5 mt-2 bk-glass-blue">
+        <mat-card-title class="orange-color text-center fw-light">
+          Harness per month
+        </mat-card-title>
+        <mat-card-content>
+          <div >
+            <canvas id="myChart2"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="col-5 mt-2 bk-glass-orange">
+        <mat-card-title class="blue-color text-center fw-light">
+          Harness per line
+        </mat-card-title>
+        <mat-card-content>
+          <div >
+            <canvas id="myChart3"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="col-5 mt-2 border-2 bk-glass-orange">
+        <mat-card-title class="blue-color text-center fw-light">
+          Harness per project
+        </mat-card-title>
+        <mat-card-content>
+          <div >
+            <canvas id="myChart4"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+<!--      <div class="col-5">-->
+<!--        <canvas id="myChart2"></canvas>-->
+<!--      </div>-->
+<!--      <div class="col-4 p-3">-->
+<!--        <canvas id="myChart3"></canvas>-->
+<!--      </div>-->
+
+<!--      <div class="col-4 p-3">-->
+<!--        <canvas id="myChart4"></canvas>-->
+<!--      </div>-->
+    </div>
+
   </div>
 </main>

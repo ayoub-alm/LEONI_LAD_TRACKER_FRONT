@@ -6,7 +6,8 @@
     "types": []
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "chartjs-gauge-extensions.ts"
   ],
   "include": [
     "src/**/*.d.ts"

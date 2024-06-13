@@ -1,240 +1,132 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h4 class="text-secondary">Create new packaging process</h4>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group me-2">
-        <a  routerLink="/admin/Packaging-process-create">
-<!--          <button class="btn btn-sm btn-outline-secondary" >Add new process</button>-->
-        </a>
-        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-      </div>
-      <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-        <span data-feather="calendar"></span>
-        This week
-      </button>
-    </div>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 border-bottom">
+    <h4 class=" orange-color">Create new packaging process</h4>
   </div>
 
-  <!--      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">-->
-  <!--      </main>-->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12">
-        <mat-card class="example-card ">
+      <div class="col-12 m-0 p-0">
+        <mat-card class="example-card">
           <mat-card-header>
             <mat-card-title class="blue-color">Infos</mat-card-title>
-<!--            <mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
           </mat-card-header>
-          <mat-card-content class="row d-flex justify-content-around">
-            <div class="col-5">
-              <label class="form-label">Process name</label>
-              <input class="form-control">
-            </div>
-            <div class="col-5">
-              <label class="form-label">Harness family</label>
-              <select class="form-select">
-                <option>Front-door</option>
-                <option>PPL</option>
-                <option>P2GO</option>
-              </select>
-            </div>
+          <mat-card-content>
+            <form [formGroup]="packagingProcessForm"  class="row d-flex justify-content-around">
+              <div class="col-5">
+                <label class="form-label">Process name</label>
+                <input class="form-control" formControlName="processName">
+              </div>
+              <div class="col-5">
+                <label class="form-label">Harness family</label>
+                <select class="form-select" formControlName="harnessFamily">
+                  <option *ngFor="let family of families | async" [value]="family.family">{{ family.family }}</option>
+                </select>
+              </div>
             <div class="col-2">
-              <button mat-button  mat-flat-button color="primary" class="my-auto mx-auto">Save</button>
+              <button mat-button mat-flat-button color="primary" class="my-auto mx-auto" (click)="OnSubmit()">Save</button>
             </div>
+            </form>
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 row  ">
         <mat-card class="example-card">
-          <mat-card-header>
+<!--          <mat-card-header>-->
             <mat-card-title class="blue-color">
-              Fields to Scan
+
               <div class="row">
-                <div class="example-action-buttons">
-                  <button mat-button (click)="accordion.openAll()">Open All</button>
-                  <button mat-button (click)="accordion.closeAll()">Close All</button>
+                <div class="col-6">
+                  Fields to Scan
+                </div>
+                <div class="example-action-buttons col-6">
+                  <button mat-button class="btn btn-sm btn-info text-white" (click)="accordion.openAll()">Open All</button>
+                  <button mat-button  class="btn btn-sm btn-outline-info" (click)="accordion.closeAll()">Close All</button>
                 </div>
               </div>
             </mat-card-title>
-<!--            <mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
-          </mat-card-header>
-          <mat-card-content class="mt-3 row" >
+          <mat-card-content class="mt-3 row">
             <form class="row d-flex justify-content-center" [formGroup]="processForm">
-            <mat-accordion class="example-headers-align col-12" multi >
-
-              <mat-expansion-panel *ngFor="let post of posts | async">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    ⚡
-                    <span class="m-2">{{ post.name }}</span>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-
-
+              <mat-accordion class="example-headers-align col-12" multi>
+                <mat-expansion-panel *ngFor="let post of posts | async">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      ⚡
+                      <span class="m-2 blue-color">{{ post.name }}</span>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
                   <ng-container *ngFor="let field of post.fields">
-                    <hr>
                     <div class="row d-flex justify-content-center">
-                    <div class="col-4 mb-2">
-                      <mat-checkbox class="mx-auto my-auto mt-3"
-                        color="primary"
-                        [id]="post.name+'#'+ field.name "
-                        (change)="chane($event)"
-                        formControlName="{{ post.name +'#'+ field.name}}">
-                        {{ field.name }}
-                      </mat-checkbox>
-                    </div>
-                    <div class="col-4">
-                      <label class="col-form-label">img</label>
-                      <input class="form-control"
-                             (change)="onFileChange($event,  post.name +'#'+ field.name+'#'+'img')"
-                              type="file" placeholder="choose image">
-                             <input type="hidden" formControlName="{{post.name +'#'+ field.name+'#'+'img'}}" >
-                    </div>
-                    <div class="col-4 mb-2">
-                      <label class="col-form-label">pre-fix</label>
-                      <input type="text"
-                             [disabled]="true"
-                             [id]="post.id+'#'+ field.name +'#'+'pre-fix' "
-                             formControlName="{{post.name +'#'+ field.name+'#'+'pre-fix'}}"
-                             class="form-control" placeholder="pre-fix">
-                    </div>
+                      <div class="col-12 mb-1">
+                        <mat-checkbox class="mx-auto my-auto mt-3"
+                                      color="primary"
+                                      [id]="post.name+'#'+ field.name"
+                                      (change)="change($event)"
+                                      formControlName="{{ post.name +'#'+ field.name}}">
+                          {{ field.name }}
+                        </mat-checkbox>
+                      </div>
+                      <div class="col-12 mb-2">
+                        <input type="text"
+                               [disabled]="true"
+                               [id]="post.id+'#'+ field.name +'#'+'pre-fix'"
+                               formControlName="{{post.name +'#'+ field.name+'#'+'pre-fix'}}"
+                               class="form-control" placeholder="pre-fix">
+                        <mat-error class="text-danger text-sm-start" *ngIf="hasError(post.name +'#'+ field.name+'#'+'pre-fix')">
+                          image  is required
+                        </mat-error>
+                      </div>
+                      <div class="col-12 mb-2">
+                        <input [classList]="[hasError(post.name +'#'+ field.name+'#'+'img') ? 'border-danger' : '', 'form-control']"
+                               (change)="onFileChange($event, post.name +'#'+ field.name+'#'+'img')"
+                               type="file" placeholder="choose image">
+                        <input type="hidden" formControlName="{{post.name +'#'+ field.name+'#'+'img'}}">
+                        <br>
+                        <mat-error class="text-danger" *ngIf="hasError(post.name +'#'+ field.name+'#'+'img')">
+                          image  is required
+                      </mat-error>
+                      </div>
                     </div>
                   </ng-container>
-
-              </mat-expansion-panel>
-
-<!--**************************** packaging section  ****************************************-->
-<!--              <mat-expansion-panel>-->
-<!--                <mat-expansion-panel-header>-->
-<!--                  <mat-panel-title>-->
-<!--                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-box " viewBox="0 0 16 16">-->
-<!--                      <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z"/>-->
-<!--                    </svg> <span class="m-2">Package</span>-->
-<!--                  </mat-panel-title>-->
-<!--                  <mat-panel-description>-->
-<!--                  </mat-panel-description>-->
-<!--                </mat-expansion-panel-header>-->
-<!--                <form class="row" >-->
-<!--                  <div class="col-4 mb-2">-->
-<!--                    <mat-checkbox-->
-<!--                      [disabled]="true"-->
-<!--                      formControlName="packaging#HarnessRef"-->
-<!--                      color="primary" >-->
-<!--                      Harness reference-->
-<!--                    </mat-checkbox>-->
-<!--                  </div>-->
-<!--                  <div class="col-4 mb-2">-->
-<!--                    <label class="form-label"> image</label>-->
-<!--                    <input type="file" class="form-control" formControlName="packaging#HarnessRef#img">-->
-<!--                  </div>-->
-<!--                  <div class="col-4 mb-2">-->
-<!--                    <label class="form-label"> pre-fix</label>-->
-<!--                    <input type="text" class="form-control col-4" formControlName="packaging#HarnessRef#pre-fix">-->
-<!--                  </div>-->
-<!--                  <hr>-->
-
-
-<!--                  <div class="col-12 row mt-2">-->
-<!--                    <div class="col-4">-->
-<!--                      <mat-checkbox-->
-<!--                        formControlName="packaging#packageBarCode"-->
-<!--                        color="primary" >-->
-<!--                        Package reference-->
-<!--                      </mat-checkbox>-->
-<!--                    </div>-->
-<!--                    <div class="col-4">-->
-<!--                      <label class="form-label">Image</label>-->
-<!--                      <input class="form-control" type="file" formControlName="packaging#packageBarCode#img">-->
-<!--                    </div>-->
-<!--                    <div class="col-4">-->
-<!--                      <label class="form-label">Pre-fix</label>-->
-<!--                      <input class="form-control" type="text" formControlName="packaging#packageBarCode#pre-fix">-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                  <hr>-->
-
-<!--                  <div class="col-12 row mt-2">-->
-<!--                    <div class="col-4 mb-2">-->
-<!--                      <mat-checkbox-->
-<!--                        formControlName="packaging#packageQuantity"-->
-<!--                        color="primary" >-->
-<!--                        Quantity-->
-<!--                      </mat-checkbox >-->
-<!--                    </div>-->
-<!--                    <div class="col-4">-->
-<!--                      <label class="form-label">image</label>-->
-<!--                      <input type="file" class="form-control" formControlName="packaging#packageQuantity#img">-->
-<!--                    </div>-->
-<!--                    <div class="col-4 mb-2">-->
-<!--                      <label class="form-label">pre-fix</label>-->
-<!--                      <input type="text" class="form-control col-6" formControlName="packaging#packageQuantity#pre-fix">-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-
-<!--                 <div class="col-12 row">-->
-<!--                   <div class="col-4 mb-2">-->
-<!--                     <mat-checkbox-->
-<!--                       formControlName="packaging#packageSize"-->
-<!--                       color="primary" >-->
-<!--                       Package size-->
-<!--                     </mat-checkbox>-->
-<!--                   </div>-->
-<!--                   <div class="col-4">-->
-<!--                     <label class="form-label">image</label>-->
-<!--                     <input type="file" class="form-control"-->
-<!--                            (change)="onFileChange($event, 'ackaging#packageSize#img')"-->
-<!--                            formControlName="ackaging#packageSize#img">-->
-<!--                   </div>-->
-<!--                   <div class="col-4">-->
-<!--                     <label class="form-label">pre-fix</label>-->
-<!--                     <input type="text" class="form-control" formControlName="ackaging#packageSize#pre-fix">-->
-<!--                   </div>-->
-<!--                 </div>-->
-<!--                </form>-->
-<!--              </mat-expansion-panel>-->
-
-
-
-            </mat-accordion>
+                </mat-expansion-panel>
+              </mat-accordion>
             </form>
           </mat-card-content>
         </mat-card>
       </div>
       <div class="col-12 col-lg-6">
-        <mat-card class="example-card">
+        <mat-card class="example-card ">
           <mat-card-header>
-            <mat-card-title class="blue-color">Order</mat-card-title>
+            <mat-card-title class="blue-color blue-color">Order</mat-card-title>
           </mat-card-header>
           <mat-card-content class="mt-3">
-            <label class="form-label">Order</label>
             <ul cdkDropList class="list-group test" (cdkDropListDropped)="drop($event)">
               <ng-container *ngIf="packagingStepDto | async as fields">
                 <ng-container *ngFor="let field of fields; let i = index">
-                  <li cdkDrag [cdkDragDisabled]="isDragDisabled(field.name.split('#')[0])" class="list-group-item px-3"
+                  <li cdkDrag [cdkDragDisabled]="" class="list-group-item px-3"
                       matBadge="{{field.order}}" matBadgeSize="medium">
-                    <span class="text-success fw-bold">{{ field.name.split('#')[0] }}</span><br>
-                    <span class="text-success"> - {{ field.name.split('#')[1] }}</span>
-                    <br>
-                   <p class="text-end">
-                     <img class="img-fluid  " src="{{field.img}}" style="max-height: 200px;">
-                   </p>
+                    <div class="row">
+                      <div class="col-6 text-black">
+                        Post : <span class="orange-color fw-bold">{{ field.name.split('#')[0] }}</span><br>
+                        <span class="blue-color">Field:   {{ field.name.split('#')[1] }}</span><br>
+                        <span class="text-black">pre-fix : {{field.preFix ? field.preFix : 'NA'}}</span>
+                      </div>
+                      <p class="text-end col-4">
+                        <img class="img-fluid" src="{{field.img}}" style="max-height: 200px;">
+                      </p>
+                    </div>
                   </li>
                 </ng-container>
               </ng-container>
             </ul>
-
-
           </mat-card-content>
           <mat-card-actions>
             <div class="d-flex justify-content-start mt-2">
-              <button mat-button mat-flat-button (click)="OnSubmit()" color="primary" class="mx-3" >SAVE</button>
-              <button mat-button mat-flat-button color="warn" class="mx-3">CANCEL</button>
+<!--              <button mat-button mat-flat-button (click)="OnSubmit()" color="primary" class="mx-3">SAVE</button>-->
+<!--              <button mat-button mat-flat-button color="warn" class="mx-3">CANCEL</button>-->
             </div>
           </mat-card-actions>
         </mat-card>
       </div>
-
     </div>
   </div>
 </main>
