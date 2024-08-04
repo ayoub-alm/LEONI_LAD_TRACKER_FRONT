@@ -18,6 +18,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {HarnessService} from "../../services/harness.service";
 import {PackagingProcessService} from "../../services/packaging-proccess.service";
 import {PackagingStepService} from "../../services/packaging.step";
+import { SegmentService } from '../../services/segment.service';
+import { SegmentModul } from '../../models/segment.model';
 
 @Component({
   selector: 'app-admin-packaging-process-create',
@@ -43,6 +45,7 @@ export class AdminPackagingProcessCreateComponent implements OnInit {
   packagingProcessForm: FormGroup;
   families:BehaviorSubject<any> = new BehaviorSubject<any>(null);
   packaginProccesId: BehaviorSubject<number> = new BehaviorSubject(0)
+  segments: BehaviorSubject<SegmentModul[]> = new BehaviorSubject<SegmentModul[]>([])
 
   /**
    *
@@ -56,12 +59,13 @@ export class AdminPackagingProcessCreateComponent implements OnInit {
   constructor(private postService: PostService,
               private formBuilder: FormBuilder,
               private snackBar: MatSnackBar,
+              private segmentService: SegmentService,
               private harnessService: HarnessService,
               private packagingProcessService:PackagingProcessService,
               private packagingStepService: PackagingStepService ) {
     this.processForm = this.formBuilder.group({});
     this.packagingProcessForm = this.formBuilder.group({
-      harnessFamily:['', Validators.required],
+      segment:['', Validators.required],
       processName:["", Validators.required],
     });
   }
@@ -70,11 +74,12 @@ export class AdminPackagingProcessCreateComponent implements OnInit {
    *
    */
   ngOnInit(): void {
-    // get families
-    this.harnessService.getFamilies().pipe(tap(value => {
-      this.families.next(value)
+   
+   this.segmentService.getAllSegment().pipe(
+    tap((segments)=>{
+      this.segments.next(segments)
     })).subscribe()
-    // get all posts
+
     this.postService.getAllPosts().subscribe(posts => {
       this.posts.next(posts);
       posts.forEach(post => {
@@ -113,7 +118,7 @@ export class AdminPackagingProcessCreateComponent implements OnInit {
         preFix: pre_fix,
         fieldId: 1,
         status: 1,
-        description: 'san the ' + field.split('#')[0] + ' ' + field.split('#')[1],
+        description: 'Scan the ' + field.split('#')[0] + ' ' + field.split('#')[1],
         packagingProcessId: 1,
         order: index + 1,
         name: field,
@@ -190,7 +195,7 @@ export class AdminPackagingProcessCreateComponent implements OnInit {
       });
 
       this.packagingProcessService.createProcess(
-        this.packagingProcessForm.get('harnessFamily')?.getRawValue(),
+        this.packagingProcessForm.get('segment')?.getRawValue(),
         1,
         this.packagingProcessForm.get('processName')?.getRawValue()
       ).pipe(

@@ -16,7 +16,8 @@ export class ProductionLineService{
   getAll(): Observable<ProductionLineModel[]> {
     return this.http.get<ProductionLineModel[]>(`${this.apiUrl}/production-lines`).pipe(
       tap(productionLines => {
-        productionLines.map(productionLine => new ProductionLineModel(productionLine.id,productionLine.name,productionLine.project_id))
+        productionLines.map(productionLine => new ProductionLineModel(productionLine.id,productionLine.name,
+          productionLine.project_id,productionLine.project,productionLine.number_of_operators))
       })
     )
   }

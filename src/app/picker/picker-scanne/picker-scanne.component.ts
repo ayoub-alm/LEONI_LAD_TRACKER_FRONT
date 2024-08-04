@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ProductionJobService } from "../../services/production.job.service";
-import { BehaviorSubject, debounceTime } from "rxjs";
+import {BehaviorSubject, debounceTime, finalize} from "rxjs";
 import { ProductionJob } from "../../models/production-job.model";
 import { CommonModule, DatePipe, NgFor } from "@angular/common";
-import { PickerService } from "../../services/picker.service";
+import {Line, PickerService} from "../../services/picker.service";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +13,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { CreateProdHarnessDTO } from "../../dtos/create-prod-harness.dto"
 import { ProdHarnessService } from "../../services/prod-harness.service";
 import Chart from "chart.js/auto";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-picker-scanne',
@@ -47,6 +48,9 @@ export class PickerScanneComponent implements OnInit, AfterViewInit {
   @ViewChild('gaugeChart') private gaugeChartRef!: ElementRef;
   noWorkAvailable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private chart: Chart | undefined;
+   productionLine: BehaviorSubject<Line> = new BehaviorSubject({
+     lineId: 0
+   });
 
   constructor(
     private productionJobService: ProductionJobService,
@@ -58,7 +62,16 @@ export class PickerScanneComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.getCurrentData();
+    this.pickerService.getCurrentLineFromLocalServer().pipe(
+      tap(value => {
+        this.productionLine.next(value)
+      })
+    ).subscribe(finalize => {
+      this.getCurrentData()
+    })
+
+
+
 
     // Listen to changes of input value in first step
     this.firstFormGroup.valueChanges.pipe(debounceTime(2000)).subscribe(value => {
@@ -79,8 +92,8 @@ export class PickerScanneComponent implements OnInit, AfterViewInit {
 
     // Listen to changes in scan label step
     this.secondFormGroup.valueChanges.pipe(debounceTime(2000)).subscribe(value => {
-      // If the value is correct create a new production job and navigate to next step
-      this.prodHarness = new CreateProdHarnessDTO(this.generatedQrCode.getValue(), this.currentJob.getValue().id);
+      // If the value is correct create a new production harness and navigate to next step
+      // this.prodHarness = new CreateProdHarnessDTO(this.generatedQrCode.getValue(), this.currentJob.getValue().id);
       if (value.secondCtrl === this.generatedQrCode.getValue()) {
         this.prodHarnessService.createProdHarness(this.prodHarness).subscribe((success) => {
           if (success) {
@@ -159,10 +172,11 @@ export class PickerScanneComponent implements OnInit, AfterViewInit {
   }
 
   getCurrentData(): void {
+    this.pickerService.getCurrentLineFromLocalServer().pipe().subscribe()
     // Get awaiting production job
-    this.productionJobService.getAwaitingProductionJobForLine(3).subscribe(value => this.productionJobs.next(value));
+    this.productionJobService.getAwaitingProductionJobForLine(this.productionLine.getValue().lineId).subscribe(value => this.productionJobs.next(value));
     // Get the current production job
-    this.pickerService.getCurrentJob(3).subscribe(
+    this.pickerService.getCurrentJob(this.productionLine.getValue().lineId).subscribe(
       success => {
         this.currentJob.next(success);
         this.updateGaugeChart();  // Update the chart whenever the current job is fetched

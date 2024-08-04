@@ -5,11 +5,14 @@ import {PickerScanneComponent} from "../picker/picker-scanne/picker-scanne.compo
 import {PickerStartComponent} from "../picker/picker-start/picker-start.component";
 import {PackagingIndexComponent} from "./packaging-index/packaging-index.component";
 import {PackagingScanComponent} from "./packaging-scan/packaging-scan.component";
+import { LineDisplayComponent } from './line-display/line-display.component';
+
 
 const routes: Routes = [
   {path: '', component: PackagingIndexComponent,children:[
       {path:'scan', component: PackagingScanComponent},
-      {path:'start', component: PickerStartComponent}
+      {path:'start', component: PickerStartComponent},
+      {path:'report', component: LineDisplayComponent}
     ]}
 ];
 

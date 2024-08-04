@@ -4,12 +4,21 @@ export class ProductionHarnessModel{
   id: number;
   uuid: string;
   range_time: string;
-  production_job: ProductionJob
+  production_job_id: number;
+  production_job: ProductionJob;
+  box_number: string;
+  status: number;
+  packaging_box_id: number | null;
 
-  constructor(id: number, uuid: string, range_time: string,production_job : ProductionJob) {
+
+  constructor(id: number, uuid: string, range_time: string, production_job: ProductionJob, box_number: string, production_job_id: number, status: number, packaging_box_id: number | null) {
     this.id = id;
     this.uuid = uuid;
     this.range_time = range_time;
-    this.production_job = production_job
+    this.production_job = production_job;
+    this.box_number = box_number;
+    this.production_job_id = production_job_id;
+    this.status = status;
+    this.packaging_box_id = packaging_box_id;
   }
 }

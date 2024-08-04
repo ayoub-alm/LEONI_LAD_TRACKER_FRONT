@@ -1,48 +1,97 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 class="text-secondary">Production Harnesses</h2>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group me-2">
-        <button type="button" class="btn btn-sm btn-outline-warning">Share</button>
-        <button type="button" class="btn btn-sm btn-outline-warning">Export</button>
-      </div>
-      <button type="button" class="btn btn-sm btn-warning dropdown-toggle">
-        <span data-feather="calendar"></span>
-        This week
-      </button>
-    </div>
+    <h3 class="orange-color display-6">Production Harnesses</h3>
+    <button [matMenuTriggerFor]="menu"  class="btn orange-bg-color btn-sm text-white">
+      <svg class="bi bi-menu-button-wide" fill="currentColor" height="16" viewBox="0 0 16 16"
+           width="16" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v2A1.5 1.5 0 0 1 14.5 5h-13A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5z"/>
+        <path
+          d="M2 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m10.823.323-.396-.396A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0M0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+      </svg>
+    </button>
   </div>
 
-  <!--      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">-->
-  <!--      </main>-->
-  <div class="table-responsive">
-    <table class="table table-striped table-hover table-sm">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="">ID</th>
-        <th scope="col">Harness Reference</th>
-        <th scope="col">production job</th>
-        <th scope="col">Production line</th>
-        <th scope="col">Project</th>
-        <th scope="col">Range time</th>
-      </tr>
-      </thead>
-      <tbody>
-      <ng-container *ngFor="let productionHarness of productionHarnesses | async" >
-        <tr>
-          <td>
-            <mat-checkbox
-            ></mat-checkbox> </td>
-          <td>{{productionHarness.uuid.toString() }}</td>
-          <td><a href="javascript:;">{{productionHarness.production_job.ref}}</a></td>
-          <td><a href="javascript:;">{{productionHarness.production_job.harness.ref}}</a></td>
-          <td><a href="javascript:;">{{productionHarness.production_job.production_line.name}}</a></td>
-          <td><a href="javascript:;">{{productionHarness.production_job.harness.project.name}}</a></td>
-          <td>{{productionHarness.range_time ? 'ok' : "non"}}</td>
-        </tr>
+  <div class="container">
+    <div class="d-flex justify-content-around p-3 m-2 ">
+      <input class="form-control shadow-sm border-info border-1 shadow-sm" placeholder="search ">
+      <button class="mx-2 btn-info text-white btn btn-sm shadow-sm" >Search</button>
+    </div>
+  </div>
+  <mat-menu #menu="matMenu">
+    <button (click)="alert('hy')"  mat-menu-item>
+      <mat-icon>add</mat-icon>
+      <span>Add</span>
+    </button>
+    <button (click)="alert('hy')" mat-menu-item>
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>update</mat-icon>
+      <span>Update</span>
+    </button>
+  </mat-menu>
+  <div class="mat-elevation-z8 rounded-3 shadow-sm" >
+    <table mat-table [dataSource]="dataSource" >
+      <!-- Position Column -->
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef class="blue-color"></th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox value="{{element.id}}" color="primary" (change)="alert($event.source.value)"></mat-checkbox></td>
       </ng-container>
-      </tbody>
+      <!-- id Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> UUID </th>
+        <td mat-cell *matCellDef="let element"> <a  href="javascript::"> {{element.uuid}} </a></td>
+      </ng-container>
+
+
+      <!-- status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef class="blue-color "> Status </th>
+        <td mat-cell *matCellDef="let element" > 
+          <span style="font-size: 0.7rem" [class]="getStatusClass(element.status)"> 
+            {{getStatus(element.status)}} </span> 
+           </td>
+      </ng-container>
+      <ng-container matColumnDef="production_job" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Job N°   </th>
+        <td mat-cell *matCellDef="let element"> <a  href="javascript::"> {{element.production_job != null  ? element.production_job.ref : "N/A"}} </a> </td>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="harness_ref" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> fx-Reference  </th>
+        <td mat-cell *matCellDef="let element">  {{element.production_job.harness.ref }}  </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="line" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Line  </th>
+        <td mat-cell *matCellDef="let element"> 
+          <!-- {{element.production_job.production_line.name }}  -->
+        </td>
+      </ng-container>
+      <!-- Box Ref Column -->
+      <ng-container matColumnDef="box_number" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Box number </th>
+        <td mat-cell *matCellDef="let element">  {{element.box_number}}  </td>
+      </ng-container>
+
+      <!--          <td><a href="javascript:;">{{productionHarness.production_job.production_line.name}}</a></td>-->
+      <!--          <td><a href="javascript:;">{{productionHarness.production_job.harness.project.name}}</a></td>-->
+      <ng-container matColumnDef="rang_time" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Range time   </th>
+        <td mat-cell *matCellDef="let element">  {{element.range_time }} {{ element.range_time != null ? 'min': ''}}  </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <mat-paginator [pageSizeOptions]="[20,5, 10, 20]"
+                   showFirstLastButtons
+                   style="position: sticky; bottom: 0px;"
+                   #paginator
+                   aria-label="Select page of  packages">
+    </mat-paginator>
   </div>
 </main>

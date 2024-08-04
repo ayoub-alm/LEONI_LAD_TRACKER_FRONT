@@ -1,8 +1,8 @@
-<div class="container-fluid bg-light" style="height: 100vh;">
+<div class="container-fluid bg-light h-100" style="height: 100vh;">
 
-  <div class="raw  d-flex justify-content-around" *ngIf="!(noWorkAvailable | async)">
+  <div class="raw glass d-flex justify-content-around h-100" *ngIf="!(noWorkAvailable | async)">
     <div class="glass col-2 mt-3">
-      <div class="card-body glass p-3 " >
+      <div class="card-body  p-3 " >
         <p class="light-blue-color">Production line: <span class="orange-color fw-blod"> Lad 1 </span></p>
         <p class="light-blue-color">Operator: <span class="orange-color fw-blod"> 987456</span></p>
         <hr>
@@ -15,23 +15,34 @@
         <p class="light-blue-color">Rest: <span
           class="text-warning fw-blod fw-bolder">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
         </p>
-        <canvas #gaugeChart class=""></canvas>
+<!--        <canvas #gaugeChart class=""></canvas>-->
       </div>
     </div>
 
 
-    <div class=" col-7 mt-3 ml-2 ">
-      <div class="card-body glass h-75">
+    <div class=" col-7 mt-3 ml-2 glass p-3 ">
+      <div class="card-body  h-75">
         <!--        <button mat-raised-button (click)="isEditable = !isEditable">-->
         <!--          {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}-->
         <!--        </button>-->
 
-        <mat-stepper #stepper linear class="glass h-100">
-          <mat-step (keydown)="nextStepEnter($event)" [editable]="isEditable">
+          <div class="d-flex justify-content-around m-3">
+            <p class="light-blue-color">Current Reference: <span class="orange-color fw-bold" >{{currentJob.getValue().harness.ref}}</span></p>
+            <p class="light-blue-color">To be delivered: <span class="orange-color fw-bold ">{{currentJob.getValue().demanded_quantity}}</span></p>
+            <p class="light-blue-color">Delivered: <span class="text-success fw-bold ">{{currentJob.getValue().delivered_quantity}}</span></p>
+            <p class="light-blue-color">Rest: <span
+              class="fw-bolder light-blue-color">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
+            </p>
+          </div>
+
+        <mat-stepper #stepper linear  headerPosition="bottom" class="glass h-100 hide-stepper-indicators">
+          <mat-step (keydown)="nextStepEnter($event)" [editable]="isEditable" >
             <ng-template matStepLabel>Press Enter</ng-template>
             <div class="text-center">
               <br>
               <img src="/assets/images/steps/entre.png" width="400px">
+              <br>
+              <br>
               <br>
             </div>
           </mat-step>
@@ -112,7 +123,8 @@
 
         <p class="light-blue-color ">Date: <span class="orange-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
         <p class="light-blue-color ">Time: <span class="orange-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
-
+        <hr>
+        <canvas #gaugeChart class=""></canvas>
       </div>
     </div>
   </div>

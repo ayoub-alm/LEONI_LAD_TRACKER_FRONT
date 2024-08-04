@@ -18,8 +18,8 @@ export class PackagingProcessService {
    * @param status
    * @param name
    */
-  createProcess(family: string, status: number, name: string): Observable<PackagingProcess> {
-    return this.http.post<PackagingProcess>(`${this.baseURL}/packaging-process`, {family: family, status: status, name: name}).pipe();
+  createProcess(segementId: string, status: number, name: string): Observable<PackagingProcess> {
+    return this.http.post<PackagingProcess>(`${this.baseURL}/packaging-process`, {segmentId: segementId, status: status, name: name}).pipe();
   }
 
   getProcessById(processId: number): Observable<PackagingProcess> {
@@ -46,5 +46,9 @@ export class PackagingProcessService {
 
   getAllProcesses(): Observable<PackagingProcess[]> {
     return this.http.get<PackagingProcess[]>(`${this.baseURL}/packaging-process`);
+  }
+
+  getProcessBySegmentId(segmentId: number): Observable<PackagingProcess>{
+    return this.http.get<PackagingProcess>(`${this.baseURL}/packaging-process/segment/${segmentId}`);
   }
 }

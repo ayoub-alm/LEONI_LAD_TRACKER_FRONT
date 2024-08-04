@@ -1,4 +1,5 @@
 import {ProjectModel} from "./project.model";
+import {PackagingType} from "./packaging.type.model";
 
 export class HarnessModel {
   id: number;
@@ -7,7 +8,8 @@ export class HarnessModel {
   family: string;
   range_time: number;
   project_id: number;
-  project: ProjectModel
+  project: ProjectModel;
+  package: PackagingType;
 
 
   constructor(data: any) {
@@ -17,6 +19,7 @@ export class HarnessModel {
     this.family = data.family;
     this.range_time = data.range_time;
     this.project_id = data.project_id;
-    this.project = data.project
+    this.project = data.project;
+    this.package = data.package;
   }
 }

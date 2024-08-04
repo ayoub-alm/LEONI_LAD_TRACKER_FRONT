@@ -14,20 +14,12 @@ export class PackagingBoxService {
   constructor(private http: HttpClient) { }
 
   // Method to get all packaging boxes
-  getAllPackagingBoxes(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseURL}/packaging_boxes`).pipe(
+  getAllPackagingBoxes(): Observable<PackagingBoxModel[]> {
+    return this.http.get<PackagingBoxModel[]>(`${this.baseURL}/packaging_boxes`).pipe(
       map(response => {
         // Map the response data to a different format if needed
         return response.map(item => {
-          return {
-            id: item.id,
-            ref: item.ref,
-            quantity: item.quantity,
-            harnessId: item.harness_id, // Rename the property if needed
-            status: item.status,
-            createdBy: item.created_by, // Rename the property if needed
-            barcode: item.barcode
-          };
+          return new PackagingBoxModel(item)
         });
       })
     );
@@ -48,4 +40,12 @@ export class PackagingBoxService {
     return this.http.delete<any>(`${this.baseURL}/packaging_box/${packagingBoxId}`);
   }
 
+
+  /**
+   * this function allow us to get the get the opened package by  line id
+   */
+
+   getOpendPackageByLineId(lineId: number): Observable<PackagingBoxDto>{
+    return this.http.get<PackagingBoxDto>(`${this.baseURL}/packaging_box/opening-package/${lineId}`);
+   }
 }

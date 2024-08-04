@@ -5,13 +5,17 @@ export class CreateProdHarnessDTO {
    uuid: string  ;
    box_number: string | null;
    rangeTime: number | null;
-   productionJobId: number = 0;
+   production_job_id: number | null;
+   status: number = 0
+   packaging_box_id: number;
 
-  constructor(uuid:string,productionJobId: number, box_number: string | null = null, rangeTime: number | null = null) {
+  constructor(uuid:string,production_job_id: number | null, box_number: string | null = null, rangeTime: number | null = null, packaging_box_id: number, status: number) {
     this.uuid = uuid;
-    this.productionJobId = productionJobId;
+    this.production_job_id = production_job_id;
     this.box_number = box_number;
     this.rangeTime = rangeTime;
+    this.packaging_box_id = packaging_box_id
+    this.status = status
   }
 }
 

@@ -1,145 +1,73 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 class="orange-color">Users</h2>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group me-2">
-        <button class="btn btn-sm  light-blue-bg-color" style="background: #0d6efd;">Share</button>
-        <button type="button" class="btn btn-sm  light-blue-bg-color">Export</button>
-      </div>
-      <button type="button" class="btn btn-sm  light-blue-bg-color dropdown-toggle">
-        <span data-feather="calendar"></span>
-        This week
-      </button>
-    </div>
+    <h3 class="orange-color display-6">Users</h3>
+    <button [matMenuTriggerFor]="menu"  class="btn orange-bg-color btn-sm text-white">
+      <svg class="bi bi-menu-button-wide" fill="currentColor" height="16" viewBox="0 0 16 16"
+           width="16" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v2A1.5 1.5 0 0 1 14.5 5h-13A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5z"/>
+        <path
+          d="M2 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m10.823.323-.396-.396A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0M0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+      </svg>
+    </button>
   </div>
 
-  <!--      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">-->
-  <!--      </main>-->
-  <div class="table-responsive">
-    <table class="table table-striped table-sm table-hover table-hover">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Header</th>
-        <th scope="col">Header</th>
-        <th scope="col">Header</th>
-        <th scope="col">Header</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>1,001</td>
-        <td>random</td>
-        <td>data</td>
-        <td>placeholder</td>
-        <td>text</td>
-      </tr>
-      <tr>
-        <td>1,002</td>
-        <td>placeholder</td>
-        <td>irrelevant</td>
-        <td>visual</td>
-        <td>layout</td>
-      </tr>
-      <tr>
-        <td>1,003</td>
-        <td>data</td>
-        <td>rich</td>
-        <td>dashboard</td>
-        <td>tabular</td>
-      </tr>
-      <tr>
-        <td>1,003</td>
-        <td>information</td>
-        <td>placeholder</td>
-        <td>illustrative</td>
-        <td>data</td>
-      </tr>
-      <tr>
-        <td>1,004</td>
-        <td>text</td>
-        <td>random</td>
-        <td>layout</td>
-        <td>dashboard</td>
-      </tr>
-      <tr>
-        <td>1,005</td>
-        <td>dashboard</td>
-        <td>irrelevant</td>
-        <td>text</td>
-        <td>placeholder</td>
-      </tr>
-      <tr>
-        <td>1,006</td>
-        <td>dashboard</td>
-        <td>illustrative</td>
-        <td>rich</td>
-        <td>data</td>
-      </tr>
-      <tr>
-        <td>1,007</td>
-        <td>placeholder</td>
-        <td>tabular</td>
-        <td>information</td>
-        <td>irrelevant</td>
-      </tr>
-      <tr>
-        <td>1,008</td>
-        <td>random</td>
-        <td>data</td>
-        <td>placeholder</td>
-        <td>text</td>
-      </tr>
-      <tr>
-        <td>1,009</td>
-        <td>placeholder</td>
-        <td>irrelevant</td>
-        <td>visual</td>
-        <td>layout</td>
-      </tr>
-      <tr>
-        <td>1,010</td>
-        <td>data</td>
-        <td>rich</td>
-        <td>dashboard</td>
-        <td>tabular</td>
-      </tr>
-      <tr>
-        <td>1,011</td>
-        <td>information</td>
-        <td>placeholder</td>
-        <td>illustrative</td>
-        <td>data</td>
-      </tr>
-      <tr>
-        <td>1,012</td>
-        <td>text</td>
-        <td>placeholder</td>
-        <td>layout</td>
-        <td>dashboard</td>
-      </tr>
-      <tr>
-        <td>1,013</td>
-        <td>dashboard</td>
-        <td>irrelevant</td>
-        <td>text</td>
-        <td>visual</td>
-      </tr>
-      <tr>
-        <td>1,014</td>
-        <td>dashboard</td>
-        <td>illustrative</td>
-        <td>rich</td>
-        <td>data</td>
-      </tr>
-      <tr>
-        <td>1,015</td>
-        <td>random</td>
-        <td>tabular</td>
-        <td>information</td>
-        <td>text</td>
-      </tr>
-      </tbody>
+  <div class="container">
+    <div class="d-flex justify-content-around p-3 m-2 ">
+      <input class="form-control shadow-sm border-info border-1 shadow-sm" placeholder="search ">
+      <button class="mx-2 btn-info text-white btn btn-sm shadow-sm" >Search</button>
+    </div>
+  </div>
+  <mat-menu #menu="matMenu">
+    <button (click)="alert('hy')"  mat-menu-item>
+      <mat-icon>add</mat-icon>
+      <span>Add</span>
+    </button>
+    <button (click)="alert('hy')" mat-menu-item>
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>update</mat-icon>
+      <span>Update</span>
+    </button>
+  </mat-menu>
+  <div class="mat-elevation-z8 rounded-3 shadow-sm" >
+    <table mat-table [dataSource]="dataSource" >
+      <!-- Position Column -->
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef class="blue-color"></th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox value="{{element.id}}" color="primary" ></mat-checkbox></td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Full Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="matriculate" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color"> Matriculate </th>
+        <td mat-cell *matCellDef="let element"> <a  href="javascript::"> {{element.matriculate}} </a> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role" >
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Role  </th>
+        <td mat-cell *matCellDef="let element"> <a  href="javascript::"> {{element.role }} </a> </td>
+      </ng-container>
+
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <mat-paginator [pageSizeOptions]="[20,5, 10, 20]"
+                   showFirstLastButtons
+                   style="position: fixed; bottom: 0px;"
+                   #paginator
+                   aria-label="Select page of  packages">
+    </mat-paginator>
   </div>
 </main>

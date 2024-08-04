@@ -8,7 +8,12 @@ color: #002857!important;
 }
 
 .orange-bg-color{
-  background-color:  #ff7514!important;
+  background-color:  #ff76146d!important;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(115, 115, 115, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .orange-border{
@@ -44,7 +49,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   /* From https://css.glass */
   background: rgba(54, 162, 235, 0.1);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -55,7 +60,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   /* From https://css.glass */
   background: rgba(255, 165, 0, 0.2);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -70,4 +75,50 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+
+.hide-stepper-indicators .mat-step-header .mat-step-icon {
+  /*display: none;*/
+  pointer-events: none;
+  background-color: #002857;
+  position: absolute;
+  bottom: 30px;
+}
+.mat-horizontal-stepper-header-container{
+  /*display: none;*/
+  pointer-events: none;
+}
+.hide-stepper-indicators{
+  /*display: none;*/
+  /* pointer-events: none;
+  background-color: #002857; */
+  /* position: absolute; */
+  bottom: 30px;
+  height: 80%;
+}
+
+body{
+  background: rgba(54, 162, 235, 0.1);
+}
+
+.mat-mdc-snack-bar-container.danger-snackbar {
+  --mdc-snackbar-container-color: #f32121b0;
+  --mat-mdc-snack-bar-button-color: #fff;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-mdc-snack-bar-action-color: #fff;
+  color: white !important; 
+  background-color: #f32121b0;
+  scale: 2.5;
+}
+
+.mat-mdc-snack-bar-container.danger-snackbar * {
+  color: white !important; 
+  text-align: center;
+}
+
+.mat-mdc-snack-bar-container {
+  position: relative !important;
+  top: 10rem !important;
 }

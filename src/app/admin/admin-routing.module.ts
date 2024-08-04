@@ -13,6 +13,7 @@ import {
 } from "./admin-packaging-process-create/admin-packaging-process-create.component";
 import {AdminDashboardComponent} from "./admin-dashboard/admin-dashboard.component";
 import {AdminPackagesComponent} from "./admin-packages/admin-packages.component";
+import {SupervisorDashboardComponent} from "./supervisor-dashboard/supervisor-dashboard.component";
 
 const routes: Routes = [
   {path: '',component: AdminIndexComponent,
@@ -27,6 +28,7 @@ const routes: Routes = [
     {path: 'Packaging-process-create',component: AdminPackagingProcessCreateComponent},
     {path: 'Packages',component: AdminPackagesComponent},
     {path: 'dashboard',component: AdminDashboardComponent},
+    {path: 'supervisor-dashboard',component: SupervisorDashboardComponent},
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
   ]},

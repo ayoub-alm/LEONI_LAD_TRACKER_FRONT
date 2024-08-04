@@ -1,40 +1,36 @@
-<div class="container-fluid bg-light h-100" >
-  <div class="raw  d-flex justify-content-around h-100" >
-    <div class=" col-2 mt-3  bk-glass-blue  ">
-      <div class="glass card p-2 h-100" >
-        <p><span class="light-blue-color">Production line:</span> <span class="orange-color"> Lad 1 </span></p>
-        <p><span class="light-blue-color">Operator:</span>  <span class="orange-color"> 987456</span></p>
+<div class="container-fluid" >
+  <div class="raw  d-flex justify-content-around" >
+    <div class=" col-2 mt-3  bk-glass-blue   ">
+      <div class=" p-2 pt-3" >
+        <p><span class="blue-color">Production line:</span> <span class="orange-color"> Lad 1 </span></p>
+        <p><span class="blue-color">Operator:</span>  <span class="orange-color"> 987456</span></p>
         <hr>
-        <p class="light-blue-color">project: <span class="orange-color"></span></p>
-        <p class="light-blue-color">Family: <span class="orange-color"></span></p>
-        <p class="light-blue-color">Current Reference: <span class="orange-color">1233654</span></p>
+        <p class="blue-color">project: <span class="orange-color">P2JO</span></p>
+        <p class="blue-color">Segment: <span class="orange-color">PPL</span></p>
+        <p class="blue-color">Current Reference: <span class="orange-color">{{currentRef.getValue()}}</span></p>
         <hr>
-        <p>Current Box: <span class="blue-color">{{packagingBox.getValue().barcode }}</span></p>
-<!--        <p>Qantity: <span class="blue-color fw-bolder">{{packagingBox.getValue().quantity }}</span>-->
-<!--        </p>-->
-<!--        <p>Picked: <span class="blue-color fw-bolder">{{delivredQuantity.getValue()}}</span></p>-->
-<!--        <p>Rest: <span-->
-<!--          class="blue-color fw-bolder"></span>-->
-<!--        </p>-->
+        <p>Current Box: <span class="blue-color">{{packagingBox.getValue().barcode ? packagingBox.getValue().barcode :0 }}</span></p>
         <canvas #myPieChart></canvas>
       </div>
     </div>
 
 
-    <div class="glass col-7 mt-3 px-3">
-      <div class="d-flex justify-content-around mt-3">
-        <p class="light-blue-color">Current Box: <span class="orange-color">{{packagingBox.getValue().barcode }}</span></p>
-        <p class="light-blue-color">Qantity: <span class="orange-color fw-bolder">{{packagingBox.getValue().quantity }}</span>
-        </p>
-        <p class="light-blue-color">Picked: <span class="blue-color fw-bolder">{{delivredQuantity.getValue()}}</span></p>
-        <p class="light-blue-color">Rest :<span class="blue-color fw-bolder">{{packagingBox.getValue().quantity - delivredQuantity.getValue()}}</span> <span
+    <div class=" col-8 mt-3  px-3 ">
+      <div class="d-flex justify-content-around  orange-bg-color py-auto p-2">
+        <h4 class="text-white">Current Box: <span class="blue-color fw-bolder">{{packagingBox.getValue().barcode }}</span></h4>
+        <h4 class="text-white">Qantity: <span class="blue-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity }}</span>
+        </h4>
+        <h4 class="text-white">Picked: <span class="blue-color fw-bolder">{{packagingBox.getValue().delivered_quantity}}</span></h4>
+        <h4 class="text-white">Rest : <span class="blue-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity - packagingBox.getValue().delivered_quantity }}</span> <span
           class="blue-color fw-bolder"></span>
-        </p>
+        </h4>
       </div>
 
-      <div class="card-body m-3 glass " >
+      <div class="card-body m-3 glass"  >
         <form  class="mt-2"  [formGroup]="packagingForm">
-        <mat-stepper #stepper [selectedIndex]="activeStep.getValue()"  [linear]="true" headerPosition="bottom"  class="border-primary">
+        <mat-stepper #stepper [selectedIndex]="activeStep.getValue()"
+                     [linear]="true" headerPosition="bottom"
+                     class="hide-stepper-indicators p-0">
           <mat-step [editable]="isEditable" >
             <ng-template matStepLabel>Press Enter</ng-template>
             <div class="text-center" style="height:50vh!important;">
@@ -45,22 +41,23 @@
           </mat-step>
 
           <ng-container *ngFor="let step of packagingStepsAll.getValue()">
-            <mat-step [editable]="isEditable" >
+            <mat-step [editable]="isEditable"  >
 <!--              <ng-template matStepLabel class="orange-bg-color">{{step.description}}</ng-template>-->
               <div class="row ">
-                <div class="col-5 my-auto mx-auto ">
-                  <h2 class="card-title orange-color fw-light col-12 ">{{step.description}}</h2>
-                  <div class="col-12 d-flex flex-column justify-content-center mt-5">
-                    <input autofocus class="form-control border-2 border-primary"
+                <div class="col-10 my-auto mx-auto ">
+                  <p class="text-center">
+                    <img class="img-fluid" [src]="step.img"  alt="">
+                  </p>
+                  <h2 class="card-title orange-color mt-3 text-center col-12 fw-blod">{{step.description}}</h2>
+                  <div class="col-12 d-flex flex-column justify-content-center mt-1 ">
+                    <input autofocus class="form-control border-2 border-primary mb-5"
                            formControlName="{{step.name}}"  [id]="'step'+step.order.toString()"
                            required>
                   </div>
                 </div>
 
                 <div class="col-7">
-                  <p class="text-center">
-                    <img class="img-fluid" [src]="step.img"  alt="">
-                  </p>
+                
                 </div>
               </div>
             </mat-step>
@@ -69,14 +66,17 @@
           <mat-step>
             <ng-template matStepLabel>Done</ng-template>
             <div class="row">
-              <div class="col-7">
+              <!-- <div class="col-7">
                 <p class="text-center ">
                   <img class="img-fluid" src="assets/images/steps/lableScanner.png" width="300px">
                 </p>
-              </div>
-              <div class="col-5 d-flex flex-column justify-content-center">
-                <h4 class="card-title orange-color display-6 ">Scan the lable</h4>
-                <form  class="mt-2">
+              </div> -->
+              <div class="col-12 d-flex flex-column justify-content-center">
+                <p class="text-center ">
+                  <img class="img-fluid" src="assets/images/steps/lableScanner.png" width="300px">
+                </p>
+                <h4 class="card-title orange-color display-6 text-center ">Scan the lable</h4>
+                <form  class="mt-2 text-center px-5">
                   <input autofocus class="form-control border-2 border-primary"
                          id="2CtrlInput"
                          required>
@@ -89,19 +89,33 @@
       </div>
     </div>
 
-    <div class="bk-glass-orange col-2 mt-3 p-3 ">
+    <div class="bk-glass-blue col-2 mt-3 p-3 ">
       <div class="">
-        <p> Delivered packages </p>
+        <p class="blue-color">Date: <span class="light-blue-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
+        <p class="blue-color">Time: <span class="light-blue-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
         <hr>
-        <p class="orange-color">Date: <span class="light-blue-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
-        <p class="orange-color">Time:<span class="light-blue-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
-        <hr>
-        <div class="" style="height: 300px;">
-          <canvas id="myChart2"></canvas>
+        <div>
+          <canvas id="myChart2" style="max-height: 250px;"></canvas>
         </div>
 <!--        <p>Date: <span class="text-dark"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>-->
 <!--        <p>Current Time:<span class="text-dark">{{ currentTime | date: 'HH:mm:ss' }}</span></p>-->
-
+         <ul class="list-group mt-3 text-center">
+         
+            <!-- <li class="list-group-item">Delivered </li> -->
+            <ng-container *ngFor="let hour of countFxPerHour">
+            <li class="list-group-item fw-light">{{hour.hour}} <span class=" blue-color">-></span> 15h : <span class="orange-color ">{{hour.total_quantity}}</span></li>
+              
+            </ng-container>
+            <li class="list-group-item blue-colorfw-light">Total <span class=" blue-color"></span>  <span class="orange-color ">{{totalOfDeliveredHarnessPershift}}</span></li>
+            <!-- <li class="list-group-item fw-light">14h <span class=" blue-color">-></span> 15h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">15h <span class=" blue-color">-></span> 16h : <span class="orange-color ">20</span> </li>
+            <li class="list-group-item fw-light">16h <span class=" blue-color">-></span> 17h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">17h <span class=" blue-color">-></span> 18h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">18h <span class=" blue-color">-></span> 19h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">19h <span class=" blue-color">-></span> 20h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">20h <span class=" blue-color">-></span> 21h : <span class="orange-color ">20</span></li>
+            <li class="list-group-item fw-light">21h <span class=" blue-color">-></span> 22h : <span class="orange-color ">20</span></li> -->
+         </ul>
       </div>
     </div>
   </div>

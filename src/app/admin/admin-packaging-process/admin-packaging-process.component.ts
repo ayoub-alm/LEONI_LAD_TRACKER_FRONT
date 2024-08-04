@@ -16,7 +16,6 @@ import {
   MatRow, MatRowDef, MatTable, MatTableDataSource
 } from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {PeriodicElement} from "../admin-packages/admin-packages.component";
 import {MatSort} from "@angular/material/sort";
 
 @Component({
@@ -27,7 +26,7 @@ import {MatSort} from "@angular/material/sort";
   styleUrl: './admin-packaging-process.component.css'
 })
 export class AdminPackagingProcessComponent implements OnInit{
-  displayedColumns: string[] = ['id', 'name', 'family', 'status', 'steps'];
+  displayedColumns: string[] = ['id', 'name', 'project','segment', 'status', 'steps'];
   dataSource!:  MatTableDataSource<PackagingProcess>;
   // dataSource: BehaviorSubject<PackagingProcess[]> = new BehaviorSubject<PackagingProcess[]>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;

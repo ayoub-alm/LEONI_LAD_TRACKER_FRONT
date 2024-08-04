@@ -2,6 +2,7 @@ import {Component, } from '@angular/core';
 import {AuthServiceService} from "../services/auth-service.service";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-login',
@@ -13,34 +14,38 @@ import {Router} from "@angular/router";
 export class LoginComponent {
 
   loginForm = this.formBuilder.group({
-    email: [''],
+    matriculate: [''],
     password: [''],
   });
 
   constructor(private formBuilder: FormBuilder,
               private authService: AuthServiceService,
-              private router: Router
+              private router: Router,
+              private snackBar: MatSnackBar,
             ) {}
 
   /**
    * Handles the login action.
    */
   login(): void {
-    const { email, password } = this.loginForm.getRawValue();
-    if (email && password) {
-      this.authService.login(email, password).subscribe({
+    const { matriculate, password } = this.loginForm.getRawValue();
+    if (matriculate && password) {
+      this.authService.login(matriculate, password).subscribe({
         next: (response) => {
           console.log(response.token);
           // Handle successful login
           if (response.user.role === "admin"){
               this.router.navigateByUrl('admin')
           }
+          else {
+            this.router.navigateByUrl('picker/scan')
+          }
           localStorage.setItem("token", response.token);
           localStorage.setItem("user", response.user);
         }
           ,
         error: (error) => {
-          console.log(error)
+           this.snackBar.open('Matriculate or password not correct!', 'error');
         }
       });
     } else {

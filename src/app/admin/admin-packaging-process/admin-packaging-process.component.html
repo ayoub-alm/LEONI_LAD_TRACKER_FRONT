@@ -1,6 +1,6 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 border-bottom">
-    <h3 class="orange-color mt-3">Packaging process</h3>
+    <h3 class="orange-color mt-3 display-6">Packaging process</h3>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
         <a routerLink="/admin/Packaging-process-create">
@@ -19,31 +19,37 @@
     <table  class=" table-striped" mat-table [dataSource]="dataSource"  matSort>
       <!-- Position Column -->
       <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef class="light-blue-color">Id</th>
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Id</th>
         <td mat-cell *matCellDef="let element">{{ element.id }}</td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="light-blue-color">Name</th>
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Name</th>
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
-      <!-- Family Column -->
-      <ng-container matColumnDef="family">
-        <th mat-header-cell *matHeaderCellDef class="light-blue-color">Family</th>
-        <td mat-cell *matCellDef="let element">{{ element.family }}</td>
+        <!-- Project Column -->
+        <ng-container matColumnDef="project">
+          <th mat-header-cell *matHeaderCellDef class="blue-color">Segment</th>
+          <td mat-cell *matCellDef="let element">{{ element.segment.name }}</td>
+        </ng-container>
+
+      <!-- Segment Column -->
+      <ng-container matColumnDef="segment">
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Segment</th>
+        <td mat-cell *matCellDef="let element">{{ element.segment.name }}</td>
       </ng-container>
 
       <!-- Status Column -->
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef class="light-blue-color">Status</th>
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Status</th>
         <td mat-cell *matCellDef="let element">{{ element.status }}</td>
       </ng-container>
 
       <!-- Steps Column -->
       <ng-container matColumnDef="steps">
-        <th mat-header-cell *matHeaderCellDef class="light-blue-color">Number of steps</th>
+        <th mat-header-cell *matHeaderCellDef class="blue-color">Number of steps</th>
         <td mat-cell *matCellDef="let element">{{ element.steps.length }}</td>
       </ng-container>
 

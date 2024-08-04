@@ -59,7 +59,6 @@ export class AdminObjectiveDialogComponent implements OnInit{
         // filter the production line and show it
         this.productionLineService.getAll().pipe(
           tap(value => {
-            console.log(value);
             this.productionLines.next(value.filter(line => line.project_id.toString() == project_id ))
           })).subscribe();
         // Filter the harnesses array based on the selected project ID
@@ -103,8 +102,7 @@ export class AdminObjectiveDialogComponent implements OnInit{
       });
       return;
     }
-    this.productionJobService.create(parseInt(
-      <string>this.jobForm.getRawValue().harness),
+    this.productionJobService.create(parseInt(<string>this.jobForm.getRawValue().harness),
       parseInt(<string>this.jobForm.getRawValue().quantity),
       parseInt(<string> this.jobForm.getRawValue().productionLine),
       parseInt(<string>this.jobForm.getRawValue().project)).subscribe(value => {

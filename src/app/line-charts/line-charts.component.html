@@ -1,0 +1,97 @@
+<nav class="navbar navbar-expand-lg blue-bg-color">
+  <div class="container-fluid">
+    <a class="navbar-brand text-primary" href="/packaging/start">
+      <img src="assets/logo.png" height="30px">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item ">
+          <a class="nav-link  text-white active" aria-current="page" href="/packaging/start">Home</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link text-white " href="/packaging/scan">Scan</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link text-white " href="#">Report</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+
+        <button class="btn btn-outline-secondary" >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<main class="row">
+  <div class="col-2 mt-5 ">
+    <ul class="list-group p-3 ">
+      <br><br>
+      <li class="list-group-item ml-2">home</li>
+      <li class="list-group-item ml-2">home</li>
+      <li class="list-group-item ml-2">home</li>
+    </ul>
+  </div>
+  <div class="col-md-10 ms-sm-auto col-lg-10 px-md-5">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h3 class="blue-color display-6 text-center">Line dashboard</h3>
+      <div class="btn-toolbar mb-2 mb-md-0"></div>
+    </div>
+    <div class="container-fluid pl-2">
+      <div class="row pl-5 p-3 d-flex justify-content-around">
+        <mat-card class="col-6 mt-2 bk-glass-blue">
+          <mat-card-title class="orange-color text-start p-2">
+            <!--         Current job-->
+          </mat-card-title>
+          <mat-card-content class="d-flex justify-content-around f-">
+            <div>
+              <p class="blue-color">Production line: <span class="orange-color fw-bold"> PPL </span></p>
+              <p class="blue-color">project: <span class="orange-color fw-bold">{{currentJob.getValue().harness.project.name}}</span></p>
+              <p class="blue-color">Family: <span class="orange-color fw-bold">{{currentJob.getValue().harness.family}}</span></p>
+              <p>Current Reference: <span class="blue-color fw-bold" >{{currentJob.getValue().harness.ref}}</span></p>
+            </div>
+            <div>
+              <p class="blue-color">To be delivered: <span class="orange-color fw-bold ">{{currentJob.getValue().demanded_quantity}}</span></p>
+              <p class="blue-color">Delivered: <span class="text-success fw-bold fw-bolder">{{currentJob.getValue().delivered_quantity}}</span></p>
+              <p class="blue-color">Rest: <span
+                class="text-warning fw-bold   ">{{currentJob.getValue().demanded_quantity - currentJob.getValue().delivered_quantity}}</span>
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="col-5 mt-2 bk-glass-blue">
+          <mat-card-title class="orange-color text-center fw-light">
+            Harness per Hour
+          </mat-card-title>
+          <mat-card-content>
+            <canvas id="harnessPerHourChart"></canvas>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="col-5 mt-2 bk-glass-blue">
+          <mat-card-title class="orange-color text-center fw-light">
+            Progress
+          </mat-card-title>
+          <mat-card-content>
+            <canvas id="progressChart"></canvas>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="col-5 mt-2 bk-glass-orange">
+          <mat-card-title class="blue-color text-center fw-light">
+            Errors
+          </mat-card-title>
+          <mat-card-content>
+            <canvas id="efficiencyChart"></canvas>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</main>

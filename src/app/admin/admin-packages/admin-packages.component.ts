@@ -1,10 +1,14 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatSortModule} from "@angular/material/sort";
-import {MatButtonModule} from "@angular/material/button"; // Only import MatPaginator once
+import {MatButtonModule} from "@angular/material/button";
+import {PackagingBoxModel} from "../../models/packaging-box.model";
+import {PackagingProcessService} from "../../services/packaging-proccess.service";
+import {PackagingBoxService} from "../../services/packaging.box.service";
+import {tap} from "rxjs/operators"; // Only import MatPaginator once
 
 @Component({
   selector: 'app-admin-packages',
@@ -14,13 +18,19 @@ import {MatButtonModule} from "@angular/material/button"; // Only import MatPagi
   styleUrls: ['./admin-packages.component.css']
 })
 
-export class AdminPackagesComponent implements AfterViewInit{
+export class AdminPackagesComponent implements AfterViewInit, OnInit{
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-
+  displayedColumns: string[] = ['id', 'barcode', 'quantity', 'line', 'nHarness', 'Progress'];
+  dataSource = new MatTableDataSource<PackagingBoxModel, MatPaginator>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator; // Ensure that paginator is initialized
-
+  constructor(private boxService: PackagingBoxService) {}
+  ngOnInit(): void {
+    this.boxService.getAllPackagingBoxes().pipe(
+      tap((value:PackagingBoxModel[]) => {
+        this.dataSource.data = value
+      })
+    ).subscribe()
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
@@ -28,34 +38,20 @@ export class AdminPackagesComponent implements AfterViewInit{
   applyFilter($event: KeyboardEvent) {
     alert('sort')
   }
+
+
+  protected readonly parseInt = parseInt;
+
+  getPercentageColor(data: number): string {
+    if (data < 35) {
+      return 'text-danger fw-bolder';
+    } else if (data >= 35 && data < 70) {
+      return 'text-warning fw-bolder';
+    } else if (data >= 70) {
+      return 'text-success  fw-bold';
+    } else {
+      return 'text-secondary fw-bolder';
+    }
+  }
 }
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
-  {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
-  {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
-  {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
-  {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
-  {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
-  {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
-  {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
-  {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
-  {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
-];

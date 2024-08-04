@@ -18,4 +18,19 @@ export class PickerService{
       tap(value => {new ProductionJob(value)})
     )
   }
+
+
+  getCurrentLineFromLocalServer(): Observable<Line>{
+    return this.http.get<Line>('http://localhost:3000/env').pipe(
+      tap(value => { return  value })
+    )
+  }
+
+
+
+
+}
+
+export interface Line {
+  lineId: number
 }

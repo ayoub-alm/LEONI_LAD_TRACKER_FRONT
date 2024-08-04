@@ -17,9 +17,9 @@
                 <input class="form-control" formControlName="processName">
               </div>
               <div class="col-5">
-                <label class="form-label">Harness family</label>
-                <select class="form-select" formControlName="harnessFamily">
-                  <option *ngFor="let family of families | async" [value]="family.family">{{ family.family }}</option>
+                <label class="form-label">Segement</label>
+                <select class="form-select" formControlName="segment">
+                  <option *ngFor="let segment of segments | async" [value]="segment.id">{{ segment.name }}</option>
                 </select>
               </div>
             <div class="col-2">
