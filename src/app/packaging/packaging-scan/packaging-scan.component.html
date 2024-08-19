@@ -10,18 +10,18 @@
         <p class="blue-color">Current Reference: <span class="orange-color">{{currentRef.getValue()}}</span></p>
         <hr>
         <p>Current Box: <span class="blue-color">{{packagingBox.getValue().barcode ? packagingBox.getValue().barcode :0 }}</span></p>
-        <canvas #myPieChart></canvas>
+        <!-- <canvas #myPieChart></canvas> -->
       </div>
     </div>
 
 
     <div class=" col-8 mt-3  px-3 ">
-      <div class="d-flex justify-content-around  orange-bg-color py-auto p-2">
-        <h4 class="text-white">Current Box: <span class="blue-color fw-bolder">{{packagingBox.getValue().barcode }}</span></h4>
-        <h4 class="text-white">Qantity: <span class="blue-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity }}</span>
+      <div class="d-flex justify-content-around  bk-glass-blue py-auto p-2">
+        <h4 class="blue-color fw-light">Current Box: <span class="orange-color fw-bolder">{{packagingBox.getValue().barcode }}</span></h4>
+        <h4 class="blue-color fw-light">Qantity: <span class="orange-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity }}</span>
         </h4>
-        <h4 class="text-white">Picked: <span class="blue-color fw-bolder">{{packagingBox.getValue().delivered_quantity}}</span></h4>
-        <h4 class="text-white">Rest : <span class="blue-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity - packagingBox.getValue().delivered_quantity }}</span> <span
+        <h4 class="blue-color fw-light">Picked: <span class="orange-color fw-bolder">{{packagingBox.getValue().delivered_quantity}}</span></h4>
+        <h4 class="blue-color fw-light">Rest : <span class="orange-color fw-bolder">{{packagingBox.getValue().to_be_delivered_quantity - packagingBox.getValue().delivered_quantity }}</span> <span
           class="blue-color fw-bolder"></span>
         </h4>
       </div>
@@ -91,8 +91,8 @@
 
     <div class="bk-glass-blue col-2 mt-3 p-3 ">
       <div class="">
-        <p class="blue-color">Date: <span class="light-blue-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
-        <p class="blue-color">Time: <span class="light-blue-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
+        <p class="blue-color">Date: <span class="orange-color"> {{ currentTime | date: 'dd/MM/yyyy' }}</span></p>
+        <p class="blue-color">Time: <span class="orange-color">{{ currentTime | date: 'HH:mm:ss' }}</span></p>
         <hr>
         <div>
           <canvas id="myChart2" style="max-height: 250px;"></canvas>

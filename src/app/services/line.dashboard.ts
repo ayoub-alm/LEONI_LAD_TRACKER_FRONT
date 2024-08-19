@@ -57,6 +57,10 @@ export class LineDashboardService {
     return this.http.post<any>(`${this.baseUrl}/total-quantity-current`, filters, this.httpOptions);
   }
 
+  getInProgressQantity(filters: any): Observable<any>{
+      return this.http.post<any>(`${this.baseUrl}/in-progress-quantity`, filters, this.httpOptions);
+  }
+
   getQuantitybyMonth(filters: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/quantity-by-month`, filters, this.httpOptions);
   }

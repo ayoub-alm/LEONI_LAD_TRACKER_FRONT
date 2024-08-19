@@ -190,14 +190,14 @@ export class LineDisplayComponent implements OnInit {
       }
     )
 
-    this.lineDashboardService.getCurrentQuantity(filters).subscribe(
+    this.lineDashboardService.getInProgressQantity(filters).subscribe(
       (data: any) => {
         this.InProgress = data.total_quantity
         this.updateCharts();
       }
         ,
       (error) => {
-        console.error('Error fetching hourly quantity:', error);
+        console.error(':', error);
       }
     )
   }
@@ -251,8 +251,8 @@ export class LineDisplayComponent implements OnInit {
           label: 'Hourly Quantity',
           data: [], // Provide your data array
         
-          borderColor: '#002857',
-          backgroundColor: '#ff761496',
+          borderColor: '#ff7514',
+          backgroundColor: '#ff7514',
           borderWidth:1
         }]
       },
@@ -324,7 +324,7 @@ export class LineDisplayComponent implements OnInit {
         datasets: [{
           data: [], // Provide your data
           backgroundColor: [
-            'rgb(0 40 87)'
+            'rgb(0, 25, 50)'
           ],
           borderWidth: 1
         }]

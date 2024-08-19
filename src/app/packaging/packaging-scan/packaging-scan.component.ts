@@ -265,38 +265,38 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
    *
    */
   initializeCharts(): void {
-    const ctx = this.pieChartRef.nativeElement.getContext('2d');
-    // const labels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8'];
-    this.chart = new Chart(ctx, {
-      type: 'doughnut',  // Changed to doughnut for a more gauge-like appearance
-      data: {
-        labels: ['Delivered Quantity', 'Remaining Quantity'],
-        datasets: [{
-          label: 'Production Quantity',
-          data: [
-            this.packagingBox.getValue().to_be_delivered_quantity,10
-            // this.packagingBox.getValue().quantity
-          ],
-          backgroundColor: [
-            'rgba(54,162,235,0.75)',
-            'rgba(255,117,20,0.73)',
-          ]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const label = context.label || '';
-                return label + ': ' + context.raw + ' units';
-              }
-            }
-          }
-        }
-      }
-    });
+    // const ctx = this.pieChartRef.nativeElement.getContext('2d');
+    // // const labels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8'];
+    // this.chart = new Chart(ctx, {
+    //   type: 'doughnut',  // Changed to doughnut for a more gauge-like appearance
+    //   data: {
+    //     labels: ['Delivered Quantity', 'Remaining Quantity'],
+    //     datasets: [{
+    //       label: 'Production Quantity',
+    //       data: [
+    //         this.packagingBox.getValue().to_be_delivered_quantity,10
+    //         // this.packagingBox.getValue().quantity
+    //       ],
+    //       backgroundColor: [
+    //         'rgba(54,162,235,0.75)',
+    //         'rgba(255,117,20,0.73)',
+    //       ]
+    //     }]
+    //   },
+    //   options: {
+    //     responsive: true,
+    //     plugins: {
+    //       tooltip: {
+    //         callbacks: {
+    //           label: function(context) {
+    //             const label = context.label || '';
+    //             return label + ': ' + context.raw + ' units';
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
 
     let postedHours: CountHourLineDto[] = []

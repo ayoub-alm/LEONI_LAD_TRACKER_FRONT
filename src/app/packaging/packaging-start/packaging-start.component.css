@@ -1,0 +1,16 @@
+h1 a {
+    color:  white ;
+    text-decoration: none;
+
+}
+
+.card-title:hover{
+    transform: scale(1.05);
+ 
+
+}
+.bk-glass-blue:hover{
+    background-color: #ff7614f2;
+    text-shadow: 11px 11px 15px black;
+    transition: 500ms ease-in-out 5s ease-out;
+}
