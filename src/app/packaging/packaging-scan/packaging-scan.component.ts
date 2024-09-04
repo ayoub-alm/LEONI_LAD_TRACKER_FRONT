@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, input, OnInit, ViewChild} from '@angular/core';
 import {MatStepper, MatStepperModule} from "@angular/material/stepper";
-import {BehaviorSubject, concatMap, debounce, debounceTime, map, queueScheduler, switchMap} from "rxjs";
-import {tap} from "rxjs/operators";
+import {BehaviorSubject, concatMap, debounce, debounceTime, map, of, queueScheduler, switchMap} from "rxjs";
+import {catchError, tap} from "rxjs/operators";
 import {PackagingBoxDto} from "../../dtos/packaging-box.dto";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -79,39 +79,43 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.setDefaultDates()
-    this.packagingProcessService.getProcessBySegmentId(2).pipe(
-      tap((packagingProcess: PackagingProcess) => {
-        let packagingStepsAll  = packagingProcess.steps.sort((a, b) => a.order - b.order);
-        let packagingSteps  = packagingProcess.steps.filter(step => step.name.includes('packaging')).sort((a, b) => a.order - b.order);
-        let loopSteps  = packagingProcess.steps.filter(step => !step.name.includes('packaging')).sort((a, b) => a.order - b.order);
-        this.loopsSteps.next(loopSteps);
-        this.packagingProcess.next(packagingProcess)
-        this.packagingSteps.next(packagingSteps);
-        this.packagingStepsAll.next(packagingStepsAll);
-        packagingProcess.steps.forEach(step => {
-          const controlName = step.name;
-          this.packagingForm.addControl(controlName, this.formBuilder.control({
-            value: '',
-            disabled: false
-          }, [Validators.required, Validators.minLength(2)]));
-          // Subscribe to valueChanges for each control
-          this.packagingForm.get(controlName)?.valueChanges.pipe(
-            debounceTime(1000)
-          ).subscribe(value => {
-            if (value !== '' ){
-              this.lastChangedControl = { name: controlName, value: value };
-              this.evaluateStepCondition(step);
-            }
+    const selectedPackagingProcess = this.storageService.getItem("process_id");
+    if(isNaN(selectedPackagingProcess)){
+      this.snackBar.open("Select packaging process to preform operation")
+    }else{
+      this.packagingProcessService.getProcessById(selectedPackagingProcess).pipe(
+        tap((packagingProcess: PackagingProcess) => {
+          let packagingStepsAll  = packagingProcess.steps.sort((a, b) => a.order - b.order);
+          let packagingSteps  = packagingProcess.steps.filter(step => step.name.includes('packaging')).sort((a, b) => a.order - b.order);
+          let loopSteps  = packagingProcess.steps.filter(step => !step.name.includes('packaging')).sort((a, b) => a.order - b.order);
+          this.loopsSteps.next(loopSteps);
+          this.packagingProcess.next(packagingProcess)
+          this.packagingSteps.next(packagingSteps);
+          this.packagingStepsAll.next(packagingStepsAll);
+          packagingProcess.steps.forEach(step => {
+            const controlName = step.name;
+            this.packagingForm.addControl(controlName, this.formBuilder.control({
+              value: '',
+              disabled: false
+            }, [Validators.required, Validators.minLength(2)]));
+            // Subscribe to valueChanges for each control
+            this.packagingForm.get(controlName)?.valueChanges.pipe(
+              debounceTime(1000)
+            ).subscribe(value => {
+              if (value !== '' ){
+                this.lastChangedControl = { name: controlName, value: value };
+                this.evaluateStepCondition(step);
+              }
+            });
           });
-        });
-      })
-    ).subscribe();
+        })
+      ).subscribe();
+    }
+   
 
     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
-
-
     // check if ther is a opend package 
     // if exsit load it to contunie work on it 
     let lineId = this.storageService.getItem("packagingCurrentLine");
@@ -120,8 +124,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
         this.packagingBox.next(packageBox)
         this.snackBar.open( "Please complete the following package "+packageBox.barcode , "ok" ,{
           duration:50000,
-          verticalPosition: 'top',
-   
+          verticalPosition: 'bottom',
           panelClass: ['danger-snackbar']
         })
         // else return to first step of loop
@@ -181,7 +184,44 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
       const totalQuantity = this.packagingBox.getValue().to_be_delivered_quantity;
       if (step.order === totalSteps) {
         let prodHarness = new CreateProdHarnessDTO(this.currentCounter.getValue(),null,this.packagingBox.getValue().barcode,null,this.packagingBox.getValue().id,2)
-        this.prodHarnessService.createProdHarness(prodHarness).pipe().subscribe()
+        this.prodHarnessService.createProdHarness(prodHarness).pipe(
+          tap(response => {
+              if (response && response.response) {
+                  console.log('ProdHarness created successfully');
+                  this.packagingBox.getValue().delivered_quantity++
+                  // Go to last step
+                  if (this.packagingBox.getValue().delivered_quantity == this.packagingBox.getValue().to_be_delivered_quantity){
+                   this.stepper.next();
+                     return;
+                  }else {
+                  // create a new prod harness 
+                  // else return to first step of loop
+                  this.activeStep.next(this.loopsSteps.getValue()[0].order)
+                  this.currentCounter.next("")
+                  this.focusCtrl(this.loopsSteps.getValue()[0].order );
+                }
+              } else {
+                  console.error('Failed to create ProdHarness');
+                  this.snackBar.open("Failed to create new production harness", "ok", {duration: 3000})
+                  this.activeStep.next(this.loopsSteps.getValue()[0].order)
+                  this.currentCounter.next("")
+                  this.focusCtrl(this.loopsSteps.getValue()[0].order );
+                  // Handle failure case, if the response is false but no error was thrown
+                  // Optionally, you can show a failure message to the user
+                  // this.notificationService.showError('Failed to create ProdHarness');
+              }
+          }),
+          catchError(error => {
+              console.error('Error occurred while creating ProdHarness:', error);
+              this.snackBar.open("Failed to create new production harness", "ok", {duration: 3000})
+              this.activeStep.next(this.loopsSteps.getValue()[0].order)
+              this.currentCounter.next("")
+              this.focusCtrl(this.loopsSteps.getValue()[0].order );
+              // Handle error case, e.g., show an error message to the user
+              // this.notificationService.showError('An error occurred while creating ProdHarness');
+              return of(null); // Return a fallback value or empty observable to keep the stream alive
+          })
+      ).subscribe();
         // this.prodHarnessService.getByRef(this.currentUuid.getValue()).pipe(
         //   tap(harness => {
         //     harness.packaging_box_id = this.packagingBox.getValue().id;
@@ -195,18 +235,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
         //     )
         //   )
         // ).subscribe();
-          this.packagingBox.getValue().delivered_quantity++
-          // Go to last step
-          if (this.packagingBox.getValue().delivered_quantity == this.packagingBox.getValue().to_be_delivered_quantity){
-           this.stepper.next();
-             return;
-          }else {
-          // create a new prod harness 
-          // else return to first step of loop
-          this.activeStep.next(this.loopsSteps.getValue()[0].order)
-          this.currentCounter.next("")
-          this.focusCtrl(this.loopsSteps.getValue()[0].order );
-        }
+     
       }
       // in loops step
       else if (step.order > this.packagingSteps.getValue().length ) {
@@ -822,7 +851,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
     const hours = ('0' + d.getHours()).slice(-2);
     const minutes = ('0' + d.getMinutes()).slice(-2);
     const seconds = ('0' + d.getSeconds()).slice(-2);
-  
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 }

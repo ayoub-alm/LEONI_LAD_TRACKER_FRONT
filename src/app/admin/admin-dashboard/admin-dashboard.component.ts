@@ -1,17 +1,19 @@
   import {Component, OnInit} from '@angular/core';
 
   import Chart from 'chart.js/auto';
-  import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card"; // Import Chart.js
+  import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
+import { LineDisplayComponent } from "../../packaging/line-display/line-display.component"; // Import Chart.js
 
 
   @Component({
     selector: 'app-admin-dashboard',
     standalone: true,
     imports: [
-      MatCard,
-      MatCardContent,
-      MatCardTitle
-    ],
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    LineDisplayComponent
+],
     templateUrl: './admin-dashboard.component.html',
     styleUrl: './admin-dashboard.component.css'
   })

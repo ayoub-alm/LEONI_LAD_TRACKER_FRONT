@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -48,5 +49,11 @@ export class StorageService {
     } catch (e) {
       console.error('Error clearing localStorage', e);
     }
+  }
+
+
+  //set user 
+  setUesr(user: UserModel): void{
+    localStorage.setItem("user", JSON.stringify(user));
   }
 }

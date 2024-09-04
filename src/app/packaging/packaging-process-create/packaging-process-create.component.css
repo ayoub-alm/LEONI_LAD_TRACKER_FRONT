@@ -1,0 +1,58 @@
+/* Style for the list group container */
+ul.cdkDropList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Style for the list group items */
+li.cdkDrag {
+  padding: 10px;
+  margin-bottom: 5px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: grab;
+}
+
+/* Style for the items when they are being dragged */
+li.cdkDragPreview {
+  background: #e9ecef;
+  border: 5px dashed #0087ff;
+}
+
+li.cdkDragPlaceholder {
+  opacity: 0.3;
+  background: #orangered;
+  border: 1px dashed #orangered;
+}
+
+/* Hover effect for draggable items */
+li.cdkDrag:hover {
+  transform: scale(1.2);
+  background: orangered;
+}
+
+/* Styles for mat-card and buttons */
+.example-card {
+  margin: 20px 0;
+}
+
+.blue-color {
+  color: #007bff;
+}
+
+button.mat-flat-button {
+  margin-top: 10px;
+}
+
+
+li{
+  background-color: rgba(169, 201, 255, 0.2) !important;
+  border-radius: 0px!important;
+
+}
+

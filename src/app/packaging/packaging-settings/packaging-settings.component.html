@@ -19,13 +19,17 @@
                             </select>
                     </div>
                     <div class="col-lg-4">
-                        <label for="" class="form-label blue-color fw-light">Packaging process</label>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                        <label for="" class="form-label blue-color fw-light d-flex">Packaging process</label>
+                            <select  formControlName="process"
+                            class="form-select" aria-label="Default select example">
+                        
+                                <option *ngFor="let pp of packagingProcess | async" [value]="pp.id"
+                                >
+                                    {{ pp.name }}
+                                </option>
+                                <option selected="false" value="0"> new</option>
                             </select>
+                         
                     </div>
                 </div>
                 </form>
@@ -44,7 +48,7 @@
                             formControlName="default_printer"
                             class="form-select" aria-label="Default select example">
                                 <ng-container *ngFor="let printer of printers.getValue() ">
-                                    <option  [value]="printer">{{ printer }}</option>
+                                    <option [selected]="getDefaultPrinter === printer" [value]="printer">{{ printer }}</option>
                                 </ng-container>
                             </select>
                     </div>
@@ -58,7 +62,7 @@
                
                     <div class="col-lg-2">
                         <br>
-                        <button type="button" class="btn btn-outline-secondary mt-1 w-100">Print test</button>
+                        <button type="button" (click)="printTestLable()" class="btn btn-outline-secondary mt-1 w-100">Print test</button>
                     </div>
                 </div>
                 </form>

@@ -3,6 +3,7 @@ import {AuthServiceService} from "../services/auth-service.service";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent {
               private authService: AuthServiceService,
               private router: Router,
               private snackBar: MatSnackBar,
+              private storageService: StorageService
             ) {}
 
   /**
@@ -38,10 +40,11 @@ export class LoginComponent {
               this.router.navigateByUrl('admin')
           }
           else {
-            this.router.navigateByUrl('picker/scan')
+            this.router.navigateByUrl('packaging/start')
           }
           localStorage.setItem("token", response.token);
-          localStorage.setItem("user", response.user);
+          // localStorage.setItem("user", response.user.toString());
+          this.storageService.setUesr(response.user)
         }
           ,
         error: (error) => {

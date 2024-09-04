@@ -27,8 +27,7 @@ import {ProjectModel} from "../../models/project.model";
 })
 export class ProductionHarnessComponent implements OnInit, AfterViewInit{
   displayedColumns: string[] = ['#','id' , 'production_job',
-    //  'harness_ref',
-      'line' , 'status' ,'box_number', 'rang_time'];
+      'line' , 'status' ,'box_number', 'date'];
   dataSource = new MatTableDataSource<ProductionHarnessModel, MatPaginator>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

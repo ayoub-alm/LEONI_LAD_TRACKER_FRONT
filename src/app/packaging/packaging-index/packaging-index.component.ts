@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {RouterOutlet} from "@angular/router";
+import {Router, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-packaging-index',
@@ -9,5 +9,12 @@ import {RouterOutlet} from "@angular/router";
   styleUrl: './packaging-index.component.css'
 })
 export class PackagingIndexComponent {
+
+  constructor(private router: Router){}
+logout() {
+ localStorage.removeItem("user")
+ localStorage.removeItem("token")
+ this.router.navigateByUrl("/login")
+}
 
 }

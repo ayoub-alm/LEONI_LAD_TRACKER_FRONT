@@ -23,5 +23,24 @@ export class SetDefaultPrinterRequest{
         this.printerName = printerName
     }
 }
+
+
+export class GetDefaultPrinterResponse{
+    defaultPrinter:string;
+
+    constructor(defaultPrinter:string){
+        this.defaultPrinter = defaultPrinter;
+    }
+}
+
+export class PrintLabelRequest {
+    qr_content: string;
+    label_content:string;
+
+    constructor(qr_content: string, label_content: string){
+        this.qr_content = qr_content;
+        this.label_content = label_content;
+    }
+}
  
   

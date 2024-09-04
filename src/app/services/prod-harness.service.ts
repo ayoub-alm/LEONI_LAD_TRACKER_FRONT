@@ -20,9 +20,9 @@ export class ProdHarnessService{
    * this function allows us to create a production harness
    * @param prodHarness
    */
-  createProdHarness(prodHarness: CreateProdHarnessDTO): Observable<boolean> {
+  createProdHarness(prodHarness: CreateProdHarnessDTO): Observable<{response:boolean}> {
     return this.http.post<any>(`${this.apiUrl}/prod-harness`, prodHarness).pipe(
-      tap(value => value)
+      tap(value => {value})
     )
   }
 
@@ -32,7 +32,7 @@ export class ProdHarnessService{
         return prodHarnesses.map(prodHarness =>
           new ProductionHarnessModel(prodHarness.id,prodHarness.uuid,
           prodHarness.range_time,prodHarness.production_job,prodHarness.box_number,prodHarness.production_job_id,
-            prodHarness.status,prodHarness.packaging_box_id))
+            prodHarness.status,prodHarness.packaging_box_id, prodHarness.created_at))
       })
     )
   }
@@ -42,7 +42,7 @@ export class ProdHarnessService{
       tap((prodHarness: ProductionHarnessModel) => {
         return  new ProductionHarnessModel(prodHarness.id,prodHarness.uuid,
           prodHarness.range_time,prodHarness.production_job,prodHarness.box_number,prodHarness.production_job_id,
-          prodHarness.status,prodHarness.packaging_box_id)
+          prodHarness.status,prodHarness.packaging_box_id,prodHarness.created_at)
       })
     );
   }
@@ -53,5 +53,10 @@ export class ProdHarnessService{
         return prodHarness;
       })
     )
+  }
+
+
+  deleteHarness(harness: ProductionHarnessModel): Observable<any>{
+    return this.http.delete(`${this.apiUrl}/prod-harness/${harness.id}` )
   }
 }
