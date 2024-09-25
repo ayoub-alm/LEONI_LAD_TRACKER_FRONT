@@ -9,7 +9,7 @@ export class StorageService {
   constructor() {}
 
   // Set data in local storage
-  setItem(key: string, value: number): void {
+  setItem(key: string, value: number| string): void {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {

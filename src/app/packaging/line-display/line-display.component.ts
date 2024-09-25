@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts";
 import Chart from 'chart.js/auto';
 import {MatCardModule} from "@angular/material/card";
@@ -10,6 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { LineDisplayDialogComponent } from '../line-display-dialog/line-display-dialog.component';
 import { CountHourLineDto, CountBoxPerHourLineDto, HourProduitsDTO, refQuantityDto, BoxCount } from '../../dtos/Line.dashboard.dto';
 import { StorageService } from '../../services/storage.service';
+import { SegmentService } from '../../services/segment.service';
+import { ProductionLineService } from '../../services/production.line.service';
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-line-display',
   standalone: true,
@@ -21,7 +24,7 @@ import { StorageService } from '../../services/storage.service';
   templateUrl: './line-display.component.html',
   styleUrl: './line-display.component.css'
 })
-export class LineDisplayComponent implements OnInit {
+export class LineDisplayComponent implements OnInit, OnDestroy {
   totalQuantity: number = 0;
   countPackages: number = 0;
   efficiency: number = 0;
@@ -35,14 +38,17 @@ export class LineDisplayComponent implements OnInit {
   countFxPerRef: refQuantityDto[] = [];
   currentTime: Date = new Date();
   InProgress: number = 0;
-
-
+  intervalId: any;
+  line: BehaviorSubject<string> = new BehaviorSubject<string>("")
+  project: BehaviorSubject<string> = new BehaviorSubject<string>("")
   constructor(
     private formBuilder: FormBuilder,
     private lineDashboardService: LineDashboardService,
     public dialog: MatDialog,
     public storageService: StorageService,
-    public router: Router
+    public router: Router,
+    private SegemntService: SegmentService,
+    private productionLineService: ProductionLineService
   ) {}
 
   ngOnInit() {
@@ -50,13 +56,52 @@ export class LineDisplayComponent implements OnInit {
     this.getInitData();
     this.initHourlyQuantityChart()
     this.initQuantityPerRefChart()
-    setInterval(() => {
-      window.location.reload();
-    }, 60000); 
+    this.intervalId = setInterval(() => {
+      this.reloadCurrentPage();
+      this.updateHourlyQuantityChart()
+    }, 5000); // 10 seconds
 
-    setInterval(() => {
+
+     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
+
+
+
+    
+   }
+
+   reloadCurrentPage() {
+    this.router.navigateByUrl('/packaging/report', { skipLocationChange: true }).then(() => {
+      this.router.navigate([this.router.url]).then(() => {
+        // Set the page to 
+        this.initHourlyQuantityChart()
+        this.countFxPerHour
+        this.updateCharts()
+        this.requestFullscreen();
+      });
+    });
+  }
+
+  // Request fullscreen mode
+  requestFullscreen() {
+    const element = document.documentElement; // Get the full page element
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // Firefox
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // Chrome, Safari and Opera
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // IE/Edge
+      element.requestFullscreen();
+    }
+  }
+
+  // Clear the interval when the component is destroyed
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   setDefaultDates() {
@@ -230,14 +275,11 @@ export class LineDisplayComponent implements OnInit {
       postedHours++
       start.setHours(start.getHours()+ 1)  
     } while ( hours < 8)
-    if(this.storageService.getItem('line_disply_efficiency') === 1){
-  //  alert('normal');
-   
-      return ((this.totalQuantity * rangeTime)/(operators * hours)) * 100;
-    }else{
-      // alert('defult');
+    // if(this.storageService.getItem('line_disply_efficiency') === 1){
+    //   return ((this.totalQuantity * rangeTime)/(operators * hours)) * 100;
+    // }else{
        return ((this.totalQuantity) /  (this.storageService.getItem('line_disply_target')) ) * 100;
-    }
+    // }
   }
 
   
@@ -292,7 +334,14 @@ export class LineDisplayComponent implements OnInit {
         const chart = Chart.getChart('hourlyQuantityChart') as Chart;
         chart.data.labels = this.countFxPerHour.map((item: any,index ) => item.hour + 'h -> ' + (item.hour + 1)+'h');
         chart.data.datasets[0].data = this.countFxPerHour.map((item: any) => item.total_quantity);
+        chart.options.animation = {
+          duration: 3000, // Animation duration in milliseconds
+          easing: 'easeInOutQuart',
+           // Animation easing function
+        };
+        
         chart.update();
+
       }
 
 

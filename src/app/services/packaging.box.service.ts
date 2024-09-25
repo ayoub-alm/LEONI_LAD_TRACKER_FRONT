@@ -31,8 +31,8 @@ export class PackagingBoxService {
   }
 
   // Method to update an existing packaging box
-  updatePackagingBox(packagingBoxId: number, updatedData: any): Observable<any> {
-    return this.http.put<any>(`${this.baseURL}/packaging_box/${packagingBoxId}`, updatedData);
+  updatePackagingBox(packagingBoxId: number, PackagingBoxModel: any): Observable<any> {
+    return this.http.put<any>(`${this.baseURL}/packaging_box/${packagingBoxId}`, PackagingBoxModel);
   }
 
   // Method to delete a packaging box

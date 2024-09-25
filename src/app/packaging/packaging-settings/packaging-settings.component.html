@@ -14,15 +14,15 @@
                     <div class="col-lg-4">
                         <label for="" class="form-label blue-color fw-light">Production Line</label>
                             <select formControlName="line"
-                             class="form-select" aria-label="Default select example">
-                                <option value="3" *ngFor="let line of productionLines.getValue()">{{ line.name }}</option>
+                             class="form-select"  aria-label="Default select example">
+                                <option [value]="line.id" *ngFor="let line of productionLines.getValue()">{{ line.name }}</option>
                             </select>
                     </div>
                     <div class="col-lg-4">
                         <label for="" class="form-label blue-color fw-light d-flex">Packaging process</label>
                             <select  formControlName="process"
                             class="form-select" aria-label="Default select example">
-                        
+    
                                 <option *ngFor="let pp of packagingProcess | async" [value]="pp.id"
                                 >
                                     {{ pp.name }}

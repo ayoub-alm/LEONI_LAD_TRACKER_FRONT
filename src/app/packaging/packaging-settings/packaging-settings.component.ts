@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, finalize, Subscription, tap } from 'rxjs';
 import { PrintingService } from '../../services/printer-service';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,8 @@ import { PackagingProcess } from '../../models/packaging.proccess.model';
 import { PackagingProcessService } from '../../services/packaging-proccess.service';
 import { StorageService } from '../../services/storage.service';
 import { Router } from '@angular/router';
+import { ProjectModel } from '../../models/project.model';
+import { ProjectService } from '../../services/project.service';
 
 
 @Component({
@@ -22,7 +24,7 @@ import { Router } from '@angular/router';
   templateUrl: './packaging-settings.component.html',
   styleUrl: './packaging-settings.component.css'
 })
-export class PackagingSettingsComponent implements  OnInit, OnDestroy{
+export class PackagingSettingsComponent implements  OnInit, OnDestroy, AfterViewInit{
 
   subscription: Subscription[] = [];
   printers: BehaviorSubject<string[]> =  new BehaviorSubject<string[]>([]);
@@ -33,10 +35,12 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
   segments: BehaviorSubject<SegmentModul[]> = new BehaviorSubject<SegmentModul[]>([]);
   packagingProcess: BehaviorSubject<PackagingProcess[]> = new BehaviorSubject<PackagingProcess[]>([])
   defaultPrinter: string = "";
+  projects : BehaviorSubject<ProjectModel[]> = new BehaviorSubject<ProjectModel[]>([])
  constructor(private printingService: PrintingService, private fromBuilder: FormBuilder,
               private productionLineService: ProductionLineService, private segmentService: SegmentService,
               private snakeBar: MatSnackBar, private packagingProcessService: PackagingProcessService,
-              private storageService : StorageService, private router: Router
+              private storageService : StorageService, private router: Router,
+              private projectService: ProjectService
   ){
     
   this.printresFrom =  this.fromBuilder.group({
@@ -51,7 +55,17 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
  }
 
 
-  ngOnInit(): void {
+  ngOnInit(): void {     
+    
+    this.lineSettings.get('line')?.valueChanges.pipe(
+      tap(value =>{
+        this.storageService.setItem('packagingCurrentLine' , parseInt(value))
+        let lineName = this.allProductionLines.getValue().find(value1 => value1.id == value)?.name
+        let lineNamec =  lineName ? lineName : "" ;
+        this.storageService.setItem('CurrentLineName' , lineNamec )
+      })
+    ).subscribe()
+    
     // get all printers to file select box 
     this.printingService.getAllPrinters().pipe(
       tap(value =>{
@@ -86,24 +100,26 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
         }
       })
     ).subscribe();
-    // fill production line select box 
-    this.productionLineService.getAll().pipe(
-      tap((value) => {
-        this.allProductionLines.next(value)
-        this.productionLines.next(value)
-      })).subscribe()
-
+    
     // fill segment select box
     this.segmentService.getAllSegment().pipe(
       tap(value => {
         this.segments.next(value)
+        this.selectDefaultProject()
       })
     ).subscribe()
      
+
+
+
+
     // get all lines for line select box 
     this.lineSettings.get('segment')?.valueChanges.subscribe(segment => {
        let selectLines: ProductionLineModel[] = this.allProductionLines.getValue().filter(value => value.segment_id == segment)
        this.productionLines.next(selectLines)       
+       this.storageService.setItem('currentProject', parseInt(segment))
+       let project = this.segments.getValue().find(value => value.id == segment)
+       if(project)  this.storageService.setItem('currentProjectName', project.name)
     })
    // get packaging process 
    this.packagingProcessService.getAllProcesses().pipe(
@@ -114,6 +130,20 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
    ).subscribe()
 
       
+  }
+
+
+  ngAfterViewInit(): void {
+
+        // fill production line select box 
+        this.productionLineService.getAll().pipe(
+          tap((value) => {
+            this.allProductionLines.next(value)
+            this.productionLines.next(value)
+            this.selectDefaultProject()
+            this.selectDefaultLine()
+          })).subscribe()
+       
   }
   /**
    *This function allows us to print a test label 
@@ -135,6 +165,30 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
       }
     }
 
+  
+
+    selectDefaultLine(){
+      const storedLineId = this.storageService.getItem('packagingCurrentLine');
+      if (storedLineId !== null) {
+        this.lineSettings.get('line')?.setValue(parseInt(storedLineId));
+      }
+    }
+
+
+    selectDefaultProject(){
+      const storedSeg = this.storageService.getItem('currentProject');
+      if (storedSeg !== null) {
+        this.lineSettings.get('segment')?.setValue(parseInt(storedSeg));
+      }
+    }
+
+
+    get currentProductionLine(){
+      let lineId = this.storageService.getItem("packagingCurrentLine");
+      if(lineId){
+        return  lineId.toString()
+      }
+    }
 
     get getDefaultPrinter(): string{
       return this.defaultPrinter
@@ -148,4 +202,7 @@ export class PackagingSettingsComponent implements  OnInit, OnDestroy{
       element.unsubscribe()
     });
   }
+
+
+ 
 }

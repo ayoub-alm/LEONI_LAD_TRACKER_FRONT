@@ -37,7 +37,9 @@ export class LoginComponent {
           console.log(response.token);
           // Handle successful login
           if (response.user.role === "admin"){
-              this.router.navigateByUrl('admin')
+              this.router.navigateByUrl('packaging/start')
+          } else if (response.user.role === "super-admin"){
+            this.router.navigateByUrl('admin')
           }
           else {
             this.router.navigateByUrl('packaging/start')
