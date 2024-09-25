@@ -44,10 +44,10 @@ export class LineDisplayDialogComponent implements OnInit {
         this.storageService.getItem('line_disply_target'),
         Validators.required
       ],
-      line_disply_efficiency: [
-        this.storageService.getItem('line_disply_efficiency'),
-        Validators.required
-      ],
+      // line_disply_efficiency: [
+      //   this.storageService.getItem('line_disply_efficiency'),
+      //   Validators.required
+      // ],
       team_leader: [
         this.storageService.getItem('team_leader'),
         Validators.required

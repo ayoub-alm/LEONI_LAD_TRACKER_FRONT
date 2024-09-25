@@ -21,4 +21,13 @@ export class AuthServiceService {
     let role = this.localStorage.getItem('user').role
     return role;
   }
+
+
+  get CurrentUserMatriculate(): string{
+    return this.localStorage.getItem('user').matriculate.toString()
+  }
+
+  getCurrentUserId(): number{
+    return this.localStorage.getItem('user').id
+  }
 }

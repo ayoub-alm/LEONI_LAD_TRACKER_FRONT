@@ -4,7 +4,7 @@
       <div class=" p-2 pt-3" >
         <p class="blue-color">project: <span class="orange-color">{{ storageService.getItem('currentProjectName') }}</span></p>
         <p><span class="blue-color">Production line:</span> <span class="orange-color"> {{ storageService.getItem('CurrentLineName') }} </span></p>
-        <p><span class="blue-color">Operator:</span>  <span class="orange-color"> 987456</span></p>
+        <p><span class="blue-color">Operator:</span>  <span class="orange-color"> {{authService.CurrentUserMatriculate}}</span></p>
         <hr>
         <!-- <p class="blue-color">Segment: <span class="orange-color">PPL</span></p> -->
         <p class="blue-color">Current Reference: <span class="orange-color">{{currentRef.getValue()}}</span></p>

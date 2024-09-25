@@ -22,6 +22,7 @@ import { LineDisplayDialogComponent } from '../line-display-dialog/line-display-
 import { MatDialog } from '@angular/material/dialog';
 import { PrintingService } from '../../services/printer-service';
 import { PrintLabelRequest } from '../../dtos/settings.dto';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-packaging-scan',
@@ -77,6 +78,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
               public storageService: StorageService,
               private dialog: MatDialog,
               private printerService: PrintingService,
+              public authService: AuthServiceService,
               private lineDashboardService: LineDashboardService,
               private harnessService: HarnessService) {
     this.packagingForm = this.formBuilder.group({
