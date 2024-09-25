@@ -62,6 +62,10 @@ export class LineDisplayComponent implements OnInit, OnDestroy {
     }, 5000); // 10 seconds
 
 
+    setInterval(() => {
+      this.reloadCurrentPage();
+    }, 30000);
+
      setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
