@@ -4,7 +4,7 @@ import {BehaviorSubject, concatMap, debounce, debounceTime, map, of, queueSchedu
 import {catchError, tap} from "rxjs/operators";
 import {PackagingBoxDto} from "../../dtos/packaging-box.dto";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatFormFieldModule, MatLabel} from "@angular/material/form-field";
 import Chart from "chart.js/auto";
 import {PackagingProcess} from "../../models/packaging.proccess.model";
 import {PackagingProcessService} from "../../services/packaging-proccess.service";
@@ -18,6 +18,11 @@ import { CreateProdHarnessDTO } from '../../dtos/create-prod-harness.dto';
 import { StorageService } from '../../services/storage.service';
 import { LineDashboardService } from '../../services/line.dashboard';
 import { CountHourLineDto } from '../../dtos/Line.dashboard.dto';
+import { LineDisplayDialogComponent } from '../line-display-dialog/line-display-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PrintingService } from '../../services/printer-service';
+import { PrintLabelRequest } from '../../dtos/settings.dto';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-packaging-scan',
@@ -27,6 +32,7 @@ import { CountHourLineDto } from '../../dtos/Line.dashboard.dto';
   styleUrls: ['./packaging-scan.component.css']
 })
 export class PackagingScanComponent implements OnInit, AfterViewInit {
+
   isEditable: boolean = true;
   currentUuid:  BehaviorSubject<string> = new BehaviorSubject<string>("");
   packagingBox: BehaviorSubject<PackagingBoxDto> = new BehaviorSubject<PackagingBoxDto>({
@@ -61,6 +67,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
     from: [this.formatDate(new Date()), Validators.required],
     to: [this.formatDate(new Date()), Validators.required]
   });
+
   countFxPerHour: CountHourLineDto[] =[];
   totalOfDeliveredHarnessPershift: number = 0;
   constructor(private formBuilder: FormBuilder,
@@ -68,16 +75,31 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
               private packagingProcessService: PackagingProcessService,
               private packagingBoxService: PackagingBoxService,
               private prodHarnessService: ProdHarnessService,
-              private storageService: StorageService,
+              public storageService: StorageService,
+              private dialog: MatDialog,
+              private printerService: PrintingService,
+              public authService: AuthServiceService,
               private lineDashboardService: LineDashboardService,
               private harnessService: HarnessService) {
-    this.packagingForm = this.formBuilder.group({});
+    this.packagingForm = this.formBuilder.group({
+      label:["", Validators.required]
+    });
   }
 
   /**
    *
    */
   ngOnInit(): void {
+    
+    this.packagingForm.get('label')?.valueChanges.pipe(
+      tap(value =>{
+        if(value === this.storageService.getItem('current_box_prefix') + this.packagingBox.getValue().barcode){
+          this.stepper.reset()
+        }else{
+          this.snackBar.open("value not correct", "OK",{duration:3000})
+        }
+      })
+    ).subscribe()
     this.setDefaultDates()
     const selectedPackagingProcess = this.storageService.getItem("process_id");
     if(isNaN(selectedPackagingProcess)){
@@ -108,10 +130,36 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
               }
             });
           });
+          this.packagingForm.addControl('label', this.formBuilder.control({
+            value: '',
+            disabled: false
+          }, [Validators.required, Validators.minLength(2)]));
         })
-      ).subscribe();
+      ).subscribe({
+        next:()=>{
+          this.packagingForm.get('label')?.valueChanges.pipe(
+            tap(value =>{
+                const prefix = this.storageService.getItem('current_box_prefix')
+                if((prefix + value) === this.packagingBox.getValue().barcode){
+                    this.packagingBox.getValue().status = 2;
+                    this.packagingBoxService.updatePackagingBox(this.packagingBox.getValue().id,this.packagingBox.getValue())
+                    .subscribe({
+                      next:(value)=>{
+                        this.stepper.reset()
+                      },
+                      error:(err)=>{
+                        this.snackBar.open(err.message, 'Ok', {duration:3000})
+                      }
+                    })
+                }
+            })
+          ).subscribe()
+        }
+      });
     }
    
+
+  
 
     setInterval(() => {
       this.currentTime = new Date();
@@ -192,6 +240,8 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
                   // Go to last step
                   if (this.packagingBox.getValue().delivered_quantity == this.packagingBox.getValue().to_be_delivered_quantity){
                    this.stepper.next();
+                   let lable = new PrintLabelRequest(this.packagingBox.getValue().barcode, this.packagingBox.getValue().barcode)
+                   this.printerService.printLable(lable).subscribe()
                      return;
                   }else {
                   // create a new prod harness 
@@ -428,6 +478,7 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
                let partNumber = input.substring(preFix.length,input.length)
                this.packagingBox.getValue().barcode = partNumber
                resolve(true)
+               this.storageService.setItem('current_box_prefix', preFix);
              }else{
                 resolve(false)
              }
@@ -499,8 +550,15 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
               let inputPreFix = input.substring(0, preFix.length);
               // if the prefix are equal get the quantity and go to next step else return false
               if(preFix === inputPreFix) {
-                this.packagingBox.getValue().to_be_delivered_quantity = input.substring(preFix.length,input.length);
-                resolve(true);
+                let netValue = input.substring(preFix.length, input.length);
+                let netValueNumber = parseFloat(netValue); // Convert substring to a number
+
+                if (!isNaN(netValueNumber)) {
+                  this.packagingBox.getValue().to_be_delivered_quantity = netValue ;
+                  resolve(true)
+                } else {
+                    resolve(false)
+                }
               } else {
                 resolve(false)
               }
@@ -731,8 +789,12 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
             }
             // if step dont contain prefix
             else {
-              this.packagingBox.getValue().to_be_delivered_quantity = formValue['packaging#Box quantity'];
-              resolve(true);
+              if(this.currentCounter.getValue() === ""){
+                 this.currentCounter.next(input) 
+                  resolve(true);
+               }else{
+                  this.currentCounter.getValue() === input ? resolve(true) : resolve(false)
+               }
             }
           } else {
             resolve(false);
@@ -854,4 +916,18 @@ export class PackagingScanComponent implements OnInit, AfterViewInit {
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
+
+
+
+  openDialog(): void {
+    this.dialog.open(LineDisplayDialogComponent, {
+      width: '50%',
+      data: { /* pass any data here if needed */ }
+    });
+  }
+
+
+
 }
+
+

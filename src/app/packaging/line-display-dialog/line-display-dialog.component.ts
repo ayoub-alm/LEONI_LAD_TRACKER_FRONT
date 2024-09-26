@@ -44,8 +44,16 @@ export class LineDisplayDialogComponent implements OnInit {
         this.storageService.getItem('line_disply_target'),
         Validators.required
       ],
-      line_disply_efficiency: [
-        this.storageService.getItem('line_disply_efficiency'),
+      // line_disply_efficiency: [
+      //   this.storageService.getItem('line_disply_efficiency'),
+      //   Validators.required
+      // ],
+      team_leader: [
+        this.storageService.getItem('team_leader'),
+        Validators.required
+      ],
+      availible_operators: [
+        this.storageService.getItem('availible_operators'),
         Validators.required
       ]
     });
@@ -59,13 +67,16 @@ export class LineDisplayDialogComponent implements OnInit {
     if (this.confForm.valid) {
       const rangeTimeValue = this.confForm.get('line_disply_rangeTime')?.value;
       const operatorsValue = this.confForm.get('line_disply_operatores')?.value;
+      const teamLeader = this.confForm.get('team_leader')?.value;
+      const presentOperator  = this.confForm.get('availible_operators')?.value;
       const efficiency = parseInt(this.confForm.get('line_disply_efficiency')?.value);
       const target = this.confForm.get('line_disply_target')?.value;
       this.storageService.setItem('line_disply_rangeTime', rangeTimeValue);
       this.storageService.setItem('line_disply_operatores', operatorsValue);
       this.storageService.setItem('line_disply_target', target);
       this.storageService.setItem('line_disply_efficiency', efficiency);
-      window.location.reload();
+      this.storageService.setItem('team_leader',teamLeader )
+      this.storageService.setItem('availible_operators',presentOperator )
       this.dialogRef.close();
     } else {
       this.logFormErrors();
@@ -77,6 +88,7 @@ export class LineDisplayDialogComponent implements OnInit {
     Object.keys(this.confForm.controls).forEach(key => {
       const controlErrors = this.confForm.get(key)?.errors;
       if (controlErrors) {
+        
         console.log('Key:', key, 'Errors:', controlErrors);
       }
     });

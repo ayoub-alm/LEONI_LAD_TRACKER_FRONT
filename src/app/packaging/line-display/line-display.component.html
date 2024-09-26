@@ -3,38 +3,39 @@
     <div class=" row my-auto" >
       <div class="col-lg-12  fw-blod  mb-1 py-auto" >
         <div class="card-body py-3  d-flex justify-content-around">
-          <h4 class="text-center light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
-            <span class="fw-bold mx-auto  orange-color"> {{currentTime | date: 'dd/MM/yyyy  HH:MM:SS'}} </span> 
+          <h4 class="text-center light-blue-color d-flex fw-blod justify-content-around  my-auto white-glass p-2">
+            <span class="blue-color">TL:</span>
+            <span class="orange-color mx-1 fw-blod">{{ storageService.getItem('team_leader') }} </span>
           </h4>
+    
           <h4 class="text-center light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
             <span class="blue-color">Project : </span>
-            <span class="mx-1 orange-color "> P21</span>
+            <span class="mx-1 orange-color "> {{ storageService.getItem('currentProjectName') }}</span>
           </h4>
           <h4 class="text-center  light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
             <span class="blue-color ">Line :</span>
-            <span class="orange-color mx-1 ">PPL - line 1</span>
+            <span class="orange-color mx-1 ">{{ storageService.getItem('CurrentLineName') }}</span>
           </h4>
-          <h4 class="text-center  light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
-            <span class="blue-color">Operators:</span>
-            <span class="orange-color mx-2">{{ storageService.getItem('line_disply_operatores') }}</span>
+          <h4 class="text-center bg-primary text-white light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
+            <span class="">Target Operators:</span>
+            <span class=" mx-2">{{ storageService.getItem('line_disply_operatores') }}</span>
           </h4>
+          <h4 class="text-center text-white bg-success light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
+            <span class="">Present Operators:</span>
+            <span class=" mx-2">{{ storageService.getItem('availible_operators') }}</span>
+          </h4>
+
+         
+
+          <h4 class="text-center bg-danger text-white light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
+            <span class=""> Absence:</span>
+            <span class="mx-2">{{storageService.getItem('line_disply_operatores') - storageService.getItem('availible_operators')  }}</span>
+          </h4>
+      
           <h4 class="text-center light-blue-color d-flex justify-content-around  my-auto white-glass p-2">
-            <span class="blue-color">Standard Time:</span>
-            <span class="orange-color mx-1">{{ storageService.getItem('line_disply_rangeTime') }}h</span>
+            <span class="fw-bold mx-auto  blue-color"> {{currentTime | date: 'dd/MM/yyyy  HH:mm:ss'}} </span> 
           </h4>
-          <h5 (click)="printReport()"
-            class="text-center d-flex blue-color justify-content-start   my-auto no-print white-glass p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff7514" class="bi bi-printer-fill  my-auto mx-2" viewBox="0 0 16 16">
-              <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8h3a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
-              <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2h3a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
-            </svg>Print
-          </h5>
-          <h5 (click)="openDialog()"
-            class="no-print text-center blue-color d-flex justify-content-start  my-auto white-glass p-2 ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff7514" class="bi bi-gear-fill py-auto my-auto mx-2" viewBox="0 0 16 16">
-              <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-            </svg> Settings
-          </h5>
+         
          
         </div >
       </div>   
@@ -97,33 +98,28 @@
     </section>
     
     <section class="container-fluid mt-4 px-3" style="transform: scale(1.5rem);" >
+
+      <!-- Remove this -->
       <div class="row  bk-glass-blue d-flex justify-content-around " >
-        <div class=" col-lg-6 rounded   row justify-content-around "  >
-          <mat-card-title class="blue-color  my-auto  ">
-            <h2 class="d-flex justify-content-around my-auto">
-               Harness per hour
-             </h2>
+      
+      <!-- END: Remove this -->
+
+        
+        <!-- HarnessLeftGraph -->
+        <mat-card class="col-lg-6 white-glass shadow-sm"  >
+          <mat-card-title class="blue-color text-center fw-light">
+            Effeciency per Hour
           </mat-card-title>
-          <div class="col-6  rounded-4 overflow-hidden" *ngFor="let count of countFxPerHour   ">
-            <mat-card  class="overflow-hidden orange-color fw-blod d-flex  shadow-sm rounded-4 shadow-sm  "  
-            [class]="count.total_quantity > 0 ? '' : 'bg-danger-subtle'"  >
-              <div class="d-flex justify-content-around shadow-lg border">
-              <h3  class=" blue-color my-auto fw-blod">
-                {{count.hour+'h ' }} 
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#00b2ff" class="mx-2 bi bi-arrow-right fw-bold" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                </svg>   
-    
-                {{(count.hour+1)}}h
-              </h3>
-              <h2 [class]="count.total_quantity > 0 ? 'text-orange' : 'text-danger'" >
-                {{'     '+count.total_quantity}}
-              </h2>
-              </div>
-            </mat-card >
-          </div>
-        </div>
-        <mat-card class="col-lg-6 white-glass"  >
+          <mat-card-content >
+            <canvas id="effeciencyChart" style="height: auto;" ></canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- HarnessRightGraph -->
+        <mat-card class="col-lg-6 white-glass shadow-sm"  >
+          <mat-card-title class="blue-color text-center fw-light">
+            Harness per Hour
+          </mat-card-title>
           <mat-card-content >
             <canvas id="hourlyQuantityChart" style="height: auto;" ></canvas>
           </mat-card-content>
@@ -163,7 +159,7 @@
       </div>
     </section>
     <footer class="container-fluid mt-3 ">
-      <p class="blue-color ">Created by<span class="orange-color">  test technology team</span><br>  © 2024–2025 <a href="https://www.leoni.com/">Leoni, Berrechid.</a></p>
+      <p class="blue-color ">Created by<span class="orange-color">   <a href="https://www.leoni.com/">Leoni, Berrechid.</a></span>  © 2024–2025</p>
     </footer>
     </main>
 

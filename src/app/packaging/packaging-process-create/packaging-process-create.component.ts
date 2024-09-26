@@ -163,17 +163,36 @@ export class PackagingProcessCreateComponent implements OnInit {
    * @param event
    * @param fieldName
    */
+  // onFileChange(event: Event, fieldName: string) {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length) {
+  //     const file = input.files[0];
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       this.processForm.get(fieldName)?.setValue(reader.result as string);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
+
   onFileChange(event: Event, fieldName: string) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length) {
       const file = input.files[0];
       const reader = new FileReader();
+  
       reader.onload = () => {
-        this.processForm.get(fieldName)?.setValue(reader.result as string);
+        // Base64-encoded image result
+        const base64Image = reader.result as string;
+  
+        // Set the base64-encoded image in the form control
+        this.processForm.get(fieldName)?.setValue(base64Image);
       };
-      reader.readAsDataURL(file);
+  
+      reader.readAsDataURL(file); // Read file as base64
     }
   }
+  
 
   /**
    *
@@ -188,12 +207,8 @@ export class PackagingProcessCreateComponent implements OnInit {
         panelClass: 'danger-snackBar'
       });
     } else {
-      this.snackBar.open('Form is valid. Proceeding...', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'bottom',
-      });
-
+      const steps = this.packagingStepDto.getValue(); // Get all steps including base64-encoded images
+  
       this.packagingProcessService.createProcess(
         this.packagingProcessForm.get('segment')?.getRawValue(),
         1,
@@ -206,8 +221,8 @@ export class PackagingProcessCreateComponent implements OnInit {
               horizontalPosition: 'center',
               verticalPosition: 'bottom',
             });
-            this.packagingStepDto.getValue().map(packagingProcess => packagingProcess.packagingProcessId = response.id)
-            return this.packagingStepService.bulkCreatePackagingStep(this.packagingStepDto.getValue());
+            steps.map(step => step.packagingProcessId = response.id);
+            return this.packagingStepService.bulkCreatePackagingStep(steps); // Send the bulk steps with images to the backend
           } else {
             this.snackBar.open('Failed to save packaging process. Please try again later.', 'Close', {
               duration: 3000,
@@ -239,6 +254,7 @@ export class PackagingProcessCreateComponent implements OnInit {
       );
     }
   }
+  
   /**
    *
    * @param postName
@@ -254,4 +270,7 @@ export class PackagingProcessCreateComponent implements OnInit {
   hasError(formControlName: string): boolean{
     return <boolean>this.processForm.get(formControlName)?.hasError('required')
   }
+
+
+  addNewStep(){}
 }

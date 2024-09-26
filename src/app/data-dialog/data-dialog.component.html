@@ -1,0 +1,28 @@
+<div class="m-3 p-3 bk-blue">
+  <form [formGroup]="confForm">
+    <h5 class="card-title orange-color mb-4">Settings</h5>
+    <div class="card-body px-5 my-2">
+      <div class="mb-3">
+        <label for="operatores" class="form-label blue-color">Operators</label>
+        <input type="number" class="form-control" id="operatores" formControlName="operatores">
+      </div>
+      <div class="mb-3">
+        <label for="rangeTime" class="form-label blue-color">Temps de game <sup>Fx/(Hour)</sup></label>
+        <input type="number" step="0.1" class="form-control blue-color" id="rangeTime" formControlName="rangeTime">
+      </div>
+      <div class="mb-3">
+        <label for="rangeTime" class="form-label blue-color">Refresh</label>
+        <select class="form-control" id="exampleFormControlSelect1">
+          <option>1 min</option>
+          <option>5 min</option>
+          <option>10 min</option>
+          <option>1 H</option>
+        </select>
+      </div>
+      <div class="d-flex justify-content-end w-100 text-end">
+        <button class="btn blue-bg-color text-white  " (click)="updateData()" type="button">Validate</button>
+        <button class="btn btn-danger bk-glass-blue mx-3" (click)="closeDialog()" type="button">Close</button>
+      </div>
+    </div>
+  </form>
+</div>

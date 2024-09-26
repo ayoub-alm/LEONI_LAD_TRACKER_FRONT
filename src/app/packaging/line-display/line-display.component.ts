@@ -1,33 +1,40 @@
-import { Component, OnInit} from '@angular/core';
-import {BaseChartDirective} from "ng2-charts";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BaseChartDirective } from "ng2-charts";
 import Chart from 'chart.js/auto';
-import {MatCardModule} from "@angular/material/card";
-import {Router, RouterOutlet} from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
+import { Router, RouterOutlet } from "@angular/router";
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LineDashboardService } from '../../services/line.dashboard';
+import { HourlyEfficiency, LineDashboardService } from '../../services/line.dashboard';
 import { MatDialog } from '@angular/material/dialog';
 import { LineDisplayDialogComponent } from '../line-display-dialog/line-display-dialog.component';
 import { CountHourLineDto, CountBoxPerHourLineDto, HourProduitsDTO, refQuantityDto, BoxCount } from '../../dtos/Line.dashboard.dto';
 import { StorageService } from '../../services/storage.service';
+import { SegmentService } from '../../services/segment.service';
+import { ProductionLineService } from '../../services/production.line.service';
+import { BehaviorSubject } from 'rxjs';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.register(ChartDataLabels);
+
+
 @Component({
   selector: 'app-line-display',
   standalone: true,
   imports: [
     BaseChartDirective,
-    MatCardModule,ReactiveFormsModule,
+    MatCardModule, ReactiveFormsModule,
     RouterOutlet, CommonModule
   ],
   templateUrl: './line-display.component.html',
   styleUrl: './line-display.component.css'
 })
-export class LineDisplayComponent implements OnInit {
+export class LineDisplayComponent implements OnInit, OnDestroy {
   totalQuantity: number = 0;
   countPackages: number = 0;
   efficiency: number = 0;
-  countFxPerHour: CountHourLineDto[] =[];
+  countFxPerHour: CountHourLineDto[] = [];
   countOfPackagePerHour: CountBoxPerHourLineDto[] = [];
-  hourProduits:HourProduitsDTO = new HourProduitsDTO(0,0,0,0);
+  hourProduits: HourProduitsDTO = new HourProduitsDTO(0, 0, 0, 0);
   filterForm: FormGroup = this.formBuilder.group({
     from: [this.formatDate(new Date()), Validators.required],
     to: [this.formatDate(new Date()), Validators.required]
@@ -35,37 +42,79 @@ export class LineDisplayComponent implements OnInit {
   countFxPerRef: refQuantityDto[] = [];
   currentTime: Date = new Date();
   InProgress: number = 0;
-
-
+  intervalId: any;
+  line: BehaviorSubject<string> = new BehaviorSubject<string>("")
+  project: BehaviorSubject<string> = new BehaviorSubject<string>("")
+  efficiencyPerHour: BehaviorSubject<HourlyEfficiency[]> = new BehaviorSubject<HourlyEfficiency[]>([]);
   constructor(
     private formBuilder: FormBuilder,
     private lineDashboardService: LineDashboardService,
     public dialog: MatDialog,
     public storageService: StorageService,
-    public router: Router
-  ) {}
+    public router: Router,
+    private SegemntService: SegmentService,
+    private productionLineService: ProductionLineService
+  ) { }
 
   ngOnInit() {
     this.setDefaultDates()
     this.getInitData();
     this.initHourlyQuantityChart()
-    this.initQuantityPerRefChart()
+    this.initEffecenyPerHoureChart()
     setInterval(() => {
-      window.location.reload();
-    }, 60000); 
+      this.reloadCurrentPage();
+      // this.updateHourlyQuantityChart()
+    }, 3000); // 3 seconds
+
 
     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
+
+
+
+  }
+
+  reloadCurrentPage() {
+    this.router.navigateByUrl('/packaging/report', { skipLocationChange: true }).then(() => {
+      this.router.navigate([this.router.url]).then(() => {
+        // Set the page to 
+        this.initHourlyQuantityChart()
+        this.countFxPerHour
+        this.updateCharts()
+        this.requestFullscreen();
+      });
+    });
+  }
+
+  // Request fullscreen mode
+  requestFullscreen() {
+    const element = document.documentElement; // Get the full page element
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // Firefox
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // Chrome, Safari and Opera
+      element.requestFullscreen();
+    } else if (element.requestFullscreen) { // IE/Edge
+      element.requestFullscreen();
+    }
+  }
+
+  // Clear the interval when the component is destroyed
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   setDefaultDates() {
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
-    
+
     let fromDate: Date;
     let toDate: Date;
-    
+
     if (currentHour >= 22 || currentHour < 6) {
       // Shift C
       fromDate = new Date(currentDate);
@@ -90,15 +139,15 @@ export class LineDisplayComponent implements OnInit {
       toDate = new Date(currentDate);
       toDate.setHours(22, 0, 0, 0);
     }
-  
+
     this.filterForm.patchValue({
       from: this.formatDate(fromDate),
       to: this.formatDate(toDate),
       // shift: this.getCurrentShift(currentHour)
     });
   }
-  
-  
+
+
 
   formatDate(date: any): string {
     const d = new Date(date);
@@ -108,7 +157,7 @@ export class LineDisplayComponent implements OnInit {
     const hours = ('0' + d.getHours()).slice(-2);
     const minutes = ('0' + d.getMinutes()).slice(-2);
     const seconds = ('0' + d.getSeconds()).slice(-2);
-  
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
@@ -116,12 +165,13 @@ export class LineDisplayComponent implements OnInit {
    * 
    */
   getInitData(): void {
-    const filters =  {
+    const filters = {
       from: this.formatDate(this.filterForm.get('from')?.value),
       to: this.formatDate(this.filterForm.get('to')?.value),
-      temps_game: this.storageService.getItem('line_disply_rangeTime')
-      }
-    
+      temps_game: this.storageService.getItem('line_disply_rangeTime'),
+      vsm:this.storageService.getItem('availible_operators')
+    }
+
     this.lineDashboardService.getTotalQuantity(filters).subscribe(
       (data: any) => {
         this.totalQuantity = data.total_quantity;
@@ -146,7 +196,7 @@ export class LineDisplayComponent implements OnInit {
 
 
     this.lineDashboardService.getCountOfPackageByHour(filters).subscribe(
-      (data:any) => {
+      (data: any) => {
         this.countOfPackagePerHour = data;
         // Update other data and charts as needed
         this.updateCharts();
@@ -157,7 +207,7 @@ export class LineDisplayComponent implements OnInit {
     );
 
     this.lineDashboardService.getHourProduitsDTO(filters).subscribe(
-      (data:any) => {
+      (data: any) => {
         this.hourProduits = data;
         // Update other data and charts as needed
         this.updateCharts();
@@ -173,7 +223,7 @@ export class LineDisplayComponent implements OnInit {
         this.countFxPerHour = data
         this.updateCharts();
       }
-        ,
+      ,
       (error) => {
         console.error('Error fetching hourly quantity:', error);
       }
@@ -184,7 +234,7 @@ export class LineDisplayComponent implements OnInit {
         this.countFxPerRef = data
         this.updateCharts();
       }
-        ,
+      ,
       (error) => {
         console.error('Error fetching hourly quantity:', error);
       }
@@ -195,11 +245,25 @@ export class LineDisplayComponent implements OnInit {
         this.InProgress = data.total_quantity
         this.updateCharts();
       }
-        ,
+      ,
       (error) => {
         console.error(':', error);
       }
     )
+    this.lineDashboardService.getEfficiencyByHour(filters).subscribe(
+      (data: any) => {
+        this.efficiencyPerHour.next(data)
+        this.updateCharts();
+      }
+      ,
+      (error) => {
+        console.error(':', error);
+      }
+    )
+
+    setTimeout(() => {
+      this.onFilter();
+    }, 5000)
   }
 
   onFilter() {
@@ -210,7 +274,7 @@ export class LineDisplayComponent implements OnInit {
   updateCharts() {
     // Implement chart updates here using Chart.js
     this.updateHourlyQuantityChart()
-    this.updateQuantityPerRefChart()
+    this.updateEffecenyPerHoureChart()
     // Other chart updates
   }
   /**
@@ -220,27 +284,24 @@ export class LineDisplayComponent implements OnInit {
   calculateEfficiency(): number {
     // Implement efficiency calculation logic based on totalQuantity and any other relevant data
     const rangeTime = this.storageService.getItem("line_disply_rangeTime")
-    const operators = this.storageService.getItem("line_disply_operatores") 
+    const operators = this.storageService.getItem("line_disply_operatores")
     let start = new Date(this.formatDate(this.filterForm.get('from')?.value))
     let to = new Date()
-    let postedHours = 0 ;
+    let postedHours = 0;
     let hours = 0;
-    do{
+    do {
       hours++
       postedHours++
-      start.setHours(start.getHours()+ 1)  
-    } while ( hours < 8)
-    if(this.storageService.getItem('line_disply_efficiency') === 1){
-  //  alert('normal');
-   
-      return ((this.totalQuantity * rangeTime)/(operators * hours)) * 100;
-    }else{
-      // alert('defult');
-       return ((this.totalQuantity) /  (this.storageService.getItem('line_disply_target')) ) * 100;
-    }
+      start.setHours(start.getHours() + 1)
+    } while (hours < 8)
+    // if(this.storageService.getItem('line_disply_efficiency') === 1){
+    //   return ((this.totalQuantity * rangeTime)/(operators * hours)) * 100;
+    // }else{
+    return ((this.totalQuantity) / (this.storageService.getItem('line_disply_target'))) * 100;
+    // }
   }
 
-  
+
   initHourlyQuantityChart(): void {
     const ctx = document.getElementById('hourlyQuantityChart') as HTMLCanvasElement;
     new Chart(ctx, {
@@ -249,51 +310,88 @@ export class LineDisplayComponent implements OnInit {
         labels: [], // Provide your labels
         datasets: [{
           label: 'Hourly Quantity',
-          data: [], // Provide your data array
-        
+          data: [10, 20, 30, 40], // Sample data
           borderColor: '#ff7514',
           backgroundColor: '#ff7514',
-          borderWidth:1
+          borderWidth: 1
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true, 
+        maintainAspectRatio: true,
+        animation: {
+          duration: 0,
+        },
         plugins: {
           legend: {
-            display: false,
-            position: 'top'
+            display: true,
+            position: 'center'
+          },
+          // Adding label plugin here
+          datalabels: {
+            display: true,
+            align: 'center',
+            color: 'oklch(0.28 0.1 255.67)',
+            font: {
+              size:16,
+              weight: 'bold'
+            },
+            formatter: function (value:any) {
+              return value; // Return value to show inside the chart
+            }
           }
         }
-      }
+      },
+      plugins: [ChartDataLabels] // Registering the Chart.js DataLabels plugin
     });
   }
 
   updateHourlyQuantityChart(): void {
-        let postedHours: CountHourLineDto[] = []
-        let start = new Date(this.formatDate(this.filterForm.get('from')?.value))
-        let to = new Date(this.formatDate(this.filterForm.get('to')?.value))
-        let hourCout = 0;
-        do {
-      
-          let hourInApiHours =  this.countFxPerHour.find(hour => hour.hour == start.getHours())
-          if(hourInApiHours) {
-            postedHours.push(new CountHourLineDto(hourInApiHours.total_quantity,start.getHours()))
-          }else{
-            console.log("not found");
-            postedHours.push(new CountHourLineDto(0,start.getHours()))
-          }
-          start.setHours(start.getHours()+ 1)  
-          hourCout++;
-        } while ( hourCout < 8)
+    let postedHours: CountHourLineDto[] = []
+    let start = new Date(this.formatDate(this.filterForm.get('from')?.value))
+    let to = new Date(this.formatDate(this.filterForm.get('to')?.value))
+    let hourCout = 0;
+    let target = this.storageService.getItem("line_disply_target");
+    const targetPerHour = target / 8
+    do {
 
-        this.countFxPerHour = postedHours
-
-        const chart = Chart.getChart('hourlyQuantityChart') as Chart;
-        chart.data.labels = this.countFxPerHour.map((item: any,index ) => item.hour + 'h -> ' + (item.hour + 1)+'h');
-        chart.data.datasets[0].data = this.countFxPerHour.map((item: any) => item.total_quantity);
-        chart.update();
+      let hourInApiHours = this.countFxPerHour.find(hour => hour.hour == start.getHours())
+      if (hourInApiHours) {
+        postedHours.push(new CountHourLineDto(hourInApiHours.total_quantity, start.getHours()))
+      } else {
+        console.log("not found");
+        postedHours.push(new CountHourLineDto(0, start.getHours()))
       }
+      start.setHours(start.getHours() + 1)
+      hourCout++;
+    } while (hourCout < 8)
+
+    this.countFxPerHour = postedHours
+   
+    const chart = Chart.getChart('hourlyQuantityChart') as Chart;
+    chart.data.labels = this.countFxPerHour.map((item: any, index) => item.hour + 'h -> ' + (item.hour + 1) + 'h');
+    // chart.data.datasets[0].data = this.countFxPerHour.map((item: any) => item.total_quantity);
+    chart.data.datasets = [{
+      label: 'Quantity',
+      data: this.countFxPerHour.map((item: any) => item.total_quantity),
+      borderColor: '#ff7614a4',
+      backgroundColor: '#ff7614a4',
+      order: 2
+  }, {
+      label: 'Target',
+      data: [...this.countFxPerHour.map((item: any) => targetPerHour),20],
+      type: 'line',
+       borderColor: 'rgba( 25, 135, 84, 1 )',
+          backgroundColor: 'rgba( 25, 135, 84, 1 )',
+      // this dataset is drawn on top
+      order: 1
+  }],
+  // labels: ['January', 'February', 'March', 'April']
+
+
+    chart.update();
+
+  }
 
 
   openDialog(): void {
@@ -304,7 +402,7 @@ export class LineDisplayComponent implements OnInit {
   }
 
   getEcartColorAndArrow(): { colorClass: string, arrow: string } {
-    const ecart = this.calculateExpected() - this.totalQuantity ;
+    const ecart = this.calculateExpected() - this.totalQuantity;
     if (ecart > 0) {
       return { colorClass: 'text-danger fw-bold', arrow: '↓' };
     } else if (ecart < 0) {
@@ -315,98 +413,103 @@ export class LineDisplayComponent implements OnInit {
   }
 
 
-  initQuantityPerRefChart(): void {
-    const ctx = document.getElementById('quantityPerRefChart') as HTMLCanvasElement;
+  initEffecenyPerHoureChart(): void {
+    const ctx = document.getElementById('effeciencyChart') as HTMLCanvasElement;
     new Chart(ctx, {
-      type: 'bar', // or 'pie'
+      type: 'line',
       data: {
-        labels: [], // Provide your labels
+        labels: ["Efficiency Per Hour"], // Provide your labels
         datasets: [{
           data: [], // Provide your data
-          backgroundColor: [
-            'rgb(0, 25, 50)'
-          ],
-          borderWidth: 1
+          borderWidth: 6,
+          fill: false,
+          borderColor: 'oklch(0.28 0.1 255.67)',
+          tension: 0.1
         }]
       },
       options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }        ,  
         responsive: true,
-        maintainAspectRatio: true, 
+        maintainAspectRatio: true,
         plugins: {
           legend: {
             position: 'top',
           },
-          title: {
-            display: false,
-            text: 'Quantity per Reference'
-          },
-          
-        },
+          // Adding label plugin here
+          datalabels: {
+            display: true,
+            align: 'top',
+            color: '#ff7514',
+            font: {
+              size:16,
+              weight: 'bold'
+            },
+            formatter: function (value:any) {
+              return value.toFixed(2); // Format the value to 2 decimal places
+            }
+          }
+        }
       },
-      
+      plugins: [ChartDataLabels] // Registering the Chart.js DataLabels plugin
     });
   }
-/**
- * 
- */
-  updateQuantityPerRefChart(): void {
-    const ctx = document.getElementById('quantityPerRefChart') as HTMLCanvasElement;
+  
+  /**
+   * 
+   */
+  updateEffecenyPerHoureChart(): void {
+    const ctx = document.getElementById('effeciencyChart') as HTMLCanvasElement;
     const chart = Chart.getChart(ctx);
     if (chart) {
-      chart.data.labels = this.countFxPerRef.map(item => item.code_fournisseur);
-      chart.data.datasets[0].data = this.countFxPerRef.map(item => item.total_quantity);
+      chart.data.labels = this.efficiencyPerHour.getValue().map(item => item.hour + 'h -> ' + (item.hour + 1) + 'h');
+      chart.data.datasets[0].data = [...this.efficiencyPerHour.getValue().map(item => item.efficiency),200];
+      chart.data.datasets[0].label ="Efficiency"
       chart.update();
     }
   }
   /**
    * print the report 
    */
-  printReport(): void{
+  printReport(): void {
     window.print()
   }
   /**
    * 
    * @returns target in line 
    */
-  getOpbjectif(): number{
+  getOpbjectif(): number {
     // const rangeTime = this.storageService.getItem("rangeTime")
     // const operators = this.storageService.getItem("operatores") 
-    const gole =  this.storageService.getItem("line_disply_target") ? this.storageService.getItem("line_disply_target") : 0; 
+    const gole = this.storageService.getItem("line_disply_target") ? this.storageService.getItem("line_disply_target") : 0;
     // let objectif = (operators * this.hourProduits.posted_hours) / rangeTime
     return parseInt(gole)
   }
- /**
-  * 
-  * @returns expected of to delever 
-  */
-  calculateExpected(){
+  /**
+   * 
+   * @returns expected of to delever 
+   */
+  calculateExpected() {
     let start = new Date(this.formatDate(this.filterForm.get('from')?.value))
     let to = new Date()
-    let hourCoutn = 0 ;
-    do{
-      let hourInApiHours =  this.countFxPerHour.find(hour => hour.hour == start.getHours())
+    let hourCoutn = 0;
+    do {
+      let hourInApiHours = this.countFxPerHour.find(hour => hour.hour == start.getHours())
       hourCoutn++
-      start.setHours(start.getHours()+ 1)  
-    } while ( start < to)
-    
-    return (( this.storageService.getItem('line_disply_target') / 8) * hourCoutn);
+      start.setHours(start.getHours() + 1)
+    } while (start < to)
+
+    return ((this.storageService.getItem('line_disply_target') / 8) * hourCoutn);
   }
 
-  getDeliveredClass(){
-  //  return this.totalQuantity >= this.calculateExpected() ? ' text-success': 'text-danger';
-   return this.totalQuantity >= this.calculateExpected() ? ' success-glass': 'danger-glass';
+  getDeliveredClass() {
+    //  return this.totalQuantity >= this.calculateExpected() ? ' text-success': 'text-danger';
+    return this.totalQuantity >= this.calculateExpected() ? ' success-glass' : 'success-glass';
   }
 
   getFormattedDifference(): string {
-    const difference =   this.totalQuantity - this.calculateExpected();
+    const difference = this.totalQuantity - this.calculateExpected();
     const formattedDifference = difference.toFixed(0); // Ensure one decimal place
     return difference > 0 ? `${formattedDifference}` : `${formattedDifference}`;
   }
 }
 
-  
+

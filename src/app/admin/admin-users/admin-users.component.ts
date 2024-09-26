@@ -17,6 +17,8 @@ import {tap} from "rxjs/operators";
 
 import {UserModel} from "../../models/user.model";
 import {HarnessModel} from "../../models/harness.model";
+import { MatDialog } from '@angular/material/dialog';
+import { AddNewUserDialogComponent } from '../../packaging/add-new-user-dialog/add-new-user-dialog.component';
 
 @Component({
   selector: 'app-admin-users',
@@ -48,7 +50,7 @@ export class AdminUsersComponent implements OnInit{
   displayedColumns: string[] = ['#', 'name', 'matriculate', 'role'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService,private dialg: MatDialog) {
   }
   ngOnInit() {
     this.userService.getAllUsers().pipe(
@@ -56,5 +58,11 @@ export class AdminUsersComponent implements OnInit{
     ).subscribe()
   }
 
+
+  addUser(){
+    this.dialg.open(AddNewUserDialogComponent,{
+      width:'50%'
+    })
+  }
   protected readonly alert = alert;
 }

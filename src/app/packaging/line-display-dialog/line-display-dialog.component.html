@@ -3,7 +3,31 @@
     <h5 class="card-title orange-color mb-4">Line display settings</h5>
     <div class="card-body px-5 my-2">
       <div class="mb-3">
-        <label for="line_disply_operatores" class="form-label blue-color">Operators</label>
+        <label for="line_disply_operatores" class="form-label blue-color">Team leader</label>
+        <input
+          type="text"
+          class="form-control"
+          id="line_disply_opera5tores"
+          formControlName="team_leader"
+        />
+        <div *ngIf="confForm.get('team_leader')?.invalid && confForm.get('team_leader')?.touched">
+          <small class="text-danger">Team leader are required</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="line_disply_operatores" class="form-label blue-color">Present Operators</label>
+        <input
+          type="number"
+          class="form-control"
+          id="availible_operators"
+          formControlName="availible_operators"
+        />
+        <div *ngIf="confForm.get('availible_operators')?.invalid && confForm.get('availible_operators')?.touched">
+          <small class="text-danger">Team leader are required</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="line_disply_operatores" class="form-label blue-color">Target Operators</label>
         <input
           type="number"
           class="form-control"
@@ -42,20 +66,7 @@
           <small class="text-danger">Target is required</small>
         </div>
       </div>
-      <div class="mb-3">
-        <label for="line_disply_efficiency" class="form-label blue-color">Efficiency Type</label>
-        <select
-          class="form-control"
-          id="line_disply_efficiency"
-          formControlName="line_disply_efficiency"
-        >
-          <option value="1">Default</option>
-          <option value="2">By Target</option>
-        </select>
-        <div *ngIf="confForm.get('line_disply_efficiency')?.invalid && confForm.get('line_disply_efficiency')?.touched">
-          <small class="text-danger">Efficiency type is required</small>
-        </div>
-      </div>
+  
       <div class="d-flex justify-content-end w-100 text-end">
         <button
           class="btn blue-bg-color text-white"

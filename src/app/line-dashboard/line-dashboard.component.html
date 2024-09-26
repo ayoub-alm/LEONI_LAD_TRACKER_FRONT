@@ -1,0 +1,220 @@
+<main class="col-lg-md-12 ms-sm-auto col-lg-lg-12  ">
+  <section class="container-fluid p-2">
+    <div class="row">
+      <div class="col-lg-12">
+        <form [formGroup]="filterForm">
+          <ul class="orange-bg-color rendedd-3 d-flex justify-content-between" style="list-style: none;">
+            <li class="col-lg-3 my-auto">
+
+              <button class="btn text-white shadow-lg  border border-white rounded" (click)="naviagteToHome()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="CurrentColor" class="bi bi-house-up-fill" viewBox="0 0 16 16">
+                  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854 1.5 1.5a.5.5 0 0 1-.708.708L13 11.707V14.5a.5.5 0 1 1-1 0v-2.793l-.646.647a.5.5 0 0 1-.708-.707l1.5-1.5a.5.5 0 0 1 .708 0Z"/>
+                  <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                  <path d="m8 3.293 4.712 4.712A4.5 4.5 0 0 0 8.758 15H3.5A1.5 1.5 0 0 1 2 13.5V9.293z"/>
+                </svg> <span class="py-auto my-2 mx-2 ">Home</span>
+              </button>
+
+
+              <button class="btn text-white shadow-lg  border border-white rounded mx-2 " (click)="openDialog()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill py-auto" viewBox="0 0 16 16">
+                  <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                </svg> <span class="py-auto my-2 mx-2 ">Settings</span>
+              </button>
+
+              <button class="btn text-white shadow-lg  border border-white rounded " (click)="printReport()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="CurrentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                  <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
+                  <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                </svg><span class="py-auto my-2 mx-2 ">Print</span>
+              </button>
+
+            </li>
+            
+            <li class="col-lg-3 m-3 d-flex justify-content-around">
+              <label class="label text-white my-auto mx-auto fw-bold ">From</label>
+              <input type="datetime-local" class="form-control mx-2 " formControlName="from">
+            </li>
+            <li class="col-lg-3  m-3  d-flex justify-content-around">
+              <label class="label text-white my-auto mx-auto fw-bold">To</label>
+              <input type="datetime-local" class="form-control mx-2" formControlName="to">
+            </li>
+            <li class="col-lg-1 m-3 d-flex justify-content-between">
+              <button (click)="onFilter()" class="btn text-white blue-bg-color" type="button">Filter</button>
+            </li>
+          </ul>
+        </form>
+      </div>
+      <div class="container-fluid mb-5">
+        <div class="row d-flex justify-content-around ">
+          <mat-card class="col-lg-3 bk-glass-blue ">
+            <mat-card-content>
+              <h6 class="text-center mb-2 light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="orange-color fw-light">Project :</span>
+                <span class="blue-color ">Astra</span>
+              </h6>
+              <h6 class="text-center mb-2 light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="orange-color fw-light">Production line :</span>
+                <span class="blue-color ">PPL - line 1</span>
+              </h6>
+              <h6 class="text-center mb-2 light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="orange-color fw-light">N Operators :</span>
+                <span class="blue-color">{{ storageService.getItem('line_dashboard_operatores') }}</span>
+              </h6>
+              <h6 class="text-center mb-2 light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="orange-color fw-light">Current Time Range:</span>
+                <span class="blue-color">{{ storageService.getItem('line_dashboard_rangeTime') }} H</span>
+              </h6>
+            </mat-card-content>
+        </mat-card>
+        
+          <mat-card class="col-lg-2  bk-glass-blue ">
+            <mat-card-title class="orange-color text-center fw-light">
+              Total of FX
+            </mat-card-title>
+            <mat-card-content>
+              <h5 class="text-center display-6 light-blue-color m-4">{{ totalQuantity ? totalQuantity : 0}}</h5>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="col-lg-2  bk-glass-blue ">
+            <mat-card-title class="orange-color text-center fw-light">
+              Expected
+            </mat-card-title>
+            <mat-card-content>
+              <h5 class="text-center display-6 blue-color  m-4">{{hourProduits.expected.toFixed(1)}}</h5>
+            </mat-card-content>
+          </mat-card>
+           
+          <mat-card class="col-lg-2  bk-glass-blue ">
+            <mat-card-title class="orange-color text-center fw-light">
+              Efficiency
+            </mat-card-title>
+            <mat-card-content>
+              <h5 class="text-center display-6 text-success m-4">{{ calculateEfficiency | number: '1.2-2' }}%</h5>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="col-lg-3   bk-glass-blue">
+            <!-- <mat-card-title class="orange-color text-center fw-light">
+              Count of Packages
+            </mat-card-title> -->
+            <mat-card-content class="m-2">
+              <h5 class="text-center mb-2  light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="blue-color fw-light"> Posted hours</span>
+                 <span class="orange-color ">{{ hourProduits.posted_hours.toFixed(2) }}</span>
+                </h5>
+              <h5 class="text-center mb-2  light-blue-color d-flex justify-content-between shadow-sm p-1"> 
+                <span class="blue-color fw-light" >Productive hours</span>
+                <span>{{ hourProduits.productive_hours.toFixed(2)}}</span>
+              </h5>
+              <h5 class="text-center mb-2 light-blue-color d-flex justify-content-between shadow-sm p-1">
+                <span class="blue-color fw-light">Difference</span>
+                <span [ngClass]="getEcartColorAndArrow().colorClass">
+                  {{ (hourProduits.posted_hours - hourProduits.productive_hours) > 0 ? (hourProduits.posted_hours - hourProduits.productive_hours).toFixed(2) : -(hourProduits.posted_hours - hourProduits.productive_hours).toFixed(2) }}
+                  <span class="fw-bold-100" *ngIf="getEcartColorAndArrow().arrow">{{ getEcartColorAndArrow().arrow }}</span>
+                </span>
+              </h5>
+            </mat-card-content>
+          </mat-card>
+
+
+          <div class=" col-lg-6 mt-2 white-glass rounded   row justify-content-around "  >
+            <mat-card-title class="blue-color  my-auto  ">
+              <h2 class="d-flex justify-content-around my-auto">
+                 Harness per hour
+               </h2>
+            </mat-card-title>
+            <div [ngClass]="countFxPerHour.length > 8 ? 'col-4': 'col-6'" class="p-1 rounded-4 overflow-hidden" *ngFor="let count of countFxPerHour   ">
+              <mat-card  class="overflow-hidden orange-color fw-blod d-flex  shadow-sm rounded-4 shadow-sm  "  
+              [class]="count.total_quantity > 0 ? '' : 'bg-danger-subtle'"  >
+                <div class="d-flex justify-content-around shadow-lg border">
+                <h4  class=" blue-color my-auto fw-blod">
+                  {{count.hour+'h' }} 
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#00b2ff" class="mx-2 bi bi-arrow-right fw-bold" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                  </svg>   
+
+                  {{(count.hour+1)}}h</h4>
+                <h2 [class]="count.total_quantity > 0 ? 'text-orange' : 'text-danger'" >
+                  {{'     '+count.total_quantity}}
+                </h2>
+                </div>
+              </mat-card >
+            </div>
+          </div>
+
+
+          <mat-card class="col-lg-6 mt-2 bk-glass-blue">
+            <mat-card-title class="blue-color text-center fw-light">
+              Fx per Hour
+            </mat-card-title>
+            <mat-card-content>
+              <canvas id="hourlyQuantityChart" ></canvas>
+            </mat-card-content>
+          </mat-card>
+
+          
+
+        <div class="row" >
+          <mat-card class="col-lg-3 mt-2 bk-glass-blue"  style="max-height: 400px;overflow: auto;">
+            <mat-card-title class="blue-color text-center fw-light">
+              Quantity per Reference  
+            </mat-card-title>
+            <mat-card-content>
+              <ul  class="list-group p-3 orange-color " style="list-style: none ;">
+                <ng-container *ngFor="let count of countFxPerRef">
+                  <li class=" text-center  mb-2 bk-glass-blue ">
+                      <span>{{count.Code_fournisseur}}</span> -->   
+                     <span class="blue-color" style="font-size: 1.2rem;">{{count.total_quantity}}</span></li>
+                </ng-container>
+              </ul>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="col-lg-6 mt-2 bk-glass-blue" >
+            <mat-card-title class="blue-color text-center fw-light" >
+              Quantity per Reference
+            </mat-card-title>
+            <mat-card-content>
+              <canvas id="quantityPerRefChart" style="max-height: 300px;"></canvas>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="col-lg-3 mt-2  bk-glass-blue" >
+            <mat-card-title class="orange-color text-center fw-light">
+              Count of Packages
+            </mat-card-title>
+            <mat-card-content class="my-auto">
+              <h1 class="text-center my-auto fw-blod light-blue-color ">{{ countPackages }}</h1>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="row mt-2">
+          <mat-card class="col-lg-6 mt-2 bk-glass-blue" >
+            <mat-card-title class="blue-color text-center fw-light" >
+              Quantity per day
+            </mat-card-title>
+            <mat-card-content>
+              <canvas id="quantityByDay" style="max-height: 300px;"></canvas>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="col-lg-6 mt-2 bk-glass-blue" >
+            <mat-card-title class="blue-color text-center fw-light" >
+              Quantity per Mounth
+            </mat-card-title>
+            <mat-card-content>
+              <canvas id="quantityByMonth" style="max-height: 300px;"></canvas>
+            </mat-card-content>
+          </mat-card>
+        </div>
+          <!-- Add other mat-card components for charts here -->
+        </div>
+        <footer class="container-fluid mt-3">
+          <p class="blue-color ">Created by<span class="orange-color">  test technology team</span> <br> © 2024–2025 <a href="https://www.leoni.com/">Leoni, Berrechid.</a></p>
+        </footer>
+      </div>
+    </div>
+  </section>
+  
+</main>
+

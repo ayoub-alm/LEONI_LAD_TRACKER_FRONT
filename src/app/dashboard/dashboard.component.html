@@ -1,0 +1,238 @@
+  <!-- <header class="navbar navbar navbar-dark blue-bg-color sticky-top flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-0  display-1 bg-white fw-bold" href="/">
+      <img src="assets/logo.png"
+          class="im-fluid "
+          height="32px"
+      style="transform: scale(0.6)">
+    </a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <h5 class="text-white fw-bold mx-3">Global Dashboard</h5>
+      </div>
+    </div>
+  </header> -->
+
+<main class="col-md-12 ms-sm-auto col-lg-12 mt-2 ">
+  <section class="container-fluid ">
+    <div class="row  bk-glass-blue  ">
+      <div class="col-12 ">
+        <form [formGroup]="filterForm">
+          <ul class="orange-bg-color rendedd-3 p-3  d-flex justify-content-around " style="list-style: none;">
+            <!-- <h4 class="blue-color display-6 text-center ">Line dashboard</h4> -->
+            <li class="col-2 ">
+              <label class="label text-white mb-2">Project</label>
+              <select class="form-select" aria-label="Default select example"  formControlName="project">
+                <option value="">All</option>
+                <ng-container *ngFor="let prj of projects.getValue()">
+                  <option  value="{{prj.id}}">{{prj.name}}</option>
+                 </ng-container>
+              </select>
+            </li>
+            <li class="  col-2">
+                <label class="label text-white mb-2">Segment</label>
+              <select class="form-select" aria-label="Default select example"  formControlName="segment">
+                <option value="">All</option>
+                <ng-container *ngFor="let sgm of segments | async">
+                  <option [value]="sgm.id">{{sgm.name}}</option>
+                 </ng-container>
+              </select>
+            </li>
+            <li class="  col-2">
+              <label class="label text-white mb-2">Production line</label>
+              <select class="form-select" aria-label="Default select example" formControlName="line">
+                <option value="">All</option>
+                <ng-container *ngFor="let prl of productionLines | async">
+                  <option [value]="prl.id">{{prl.name}}</option>
+                 </ng-container>
+              </select>
+            </li>
+            <li class="  col-2">
+              <label class="label text-white mb-2">From</label>
+              <input type="datetime-local"  class="form-control"formControlName="from" >
+
+            </li>
+            <li class="  col-2 mt-1">
+              <label class="label text-white mb-12"> To</label>
+              <input type="datetime-local" name="" id="" class="form-control" formControlName="to">
+            </li>
+            <li class="  col-1">
+              <br>
+              <button (click)="onFilter()"
+               class="btn text-white blue-bg-color"
+               type="button">Filter</button>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-fluid px-3">
+    <div class="row d-flex justify-content-around">
+      <!-- <div class="col-lg-4 white-glass-simple">
+        <h5 class="fw-light text-center card-title py-2">Harness per Segment</h5>
+        <mat-card-content>
+          <canvas id="totalQuantityBySegmentChart" ></canvas>
+        </mat-card-content>
+      </div> -->
+
+     
+      <div class="card col-lg-6 white-glass-simple " style="max-height: 400px; overflow: auto;">
+        <div class="card-body p-1">
+            <table class="table table-hover ">
+              <thead>
+                <tr class="orange-color">
+                  <th scope="col" class="orange-color">Segment</th>
+                  <th scope="col" class="orange-color">Total of harnesses</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let total of totalBysegmentData.getValue()">
+                <tr >
+                  <td class="blue-color">{{total.segment}}</td>
+                  <!-- <th scope="row" class="blue-color">{{total.line.segment.project.name}}</th> -->
+                  <td class="blue-color">{{total.count}}</td>
+  
+                </tr>
+               </ng-container>
+              </tbody>
+            </table>
+          <!-- </ng-container> -->
+        </div>
+      </div>
+      <div class="col-lg-6 white-glass-simple">
+        <h5 class="fw-light text-center card-title py-2">Harness per Segment</h5>
+        <mat-card-content>
+          <canvas id="totalQuantityBySegmentChart" ></canvas>
+        </mat-card-content>
+      </div>
+     
+      <div class="card col-lg-6  white-glass-simple" style="max-height: 400px; overflow: auto;">
+        <div class="card-body p-1">
+            <table class="table table-hover ">
+              <thead>
+                <tr class="orange-color">
+                  <th scope="col" class="orange-color">Line</th>
+                  <!-- <th scope="col" class="orange-color">Project</th> -->
+                  <th scope="col" class="orange-color">Segment</th>
+                  <th scope="col" class="orange-color">Total of harnesses</th>
+                  <th scope="col" class="orange-color">Efficiency</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let total of totalQuantity.getValue()">
+                <tr >
+                  <td class="blue-color">{{total.line.name}}</td>
+                  <!-- <th scope="row" class="blue-color">{{total.line.segment.project.name}}</th> -->
+                  <td class="blue-color">{{total.line.segment.name}}</td>
+                  
+                  <td class="blue-color">{{total.total_quantity}}</td>
+                  <th class=" light-blue-color">N/A %</th>
+                </tr>
+               </ng-container>
+              </tbody>
+            </table>
+          <!-- </ng-container> -->
+        </div>
+      </div>
+      <div class="col-lg-6 white-glass-simple">
+        <h5 class="fw-light text-center card-title py-2">Harness per Segment</h5>
+        <mat-card-content>
+          <canvas id="totalQuantityBySegmentChart" ></canvas>
+        </mat-card-content>
+      </div>
+       <div class="col-lg-6  white-glass-simple ">
+        <h5 class="fw-light text-center card-title py-2">Harness per Line</h5>
+        <mat-card-content>
+          <canvas id="hourlyQuantityChart"></canvas>
+        </mat-card-content>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <div class="container-fluid mt-3">
+    <div class="row d-flex justify-content-around">
+
+      <!-- <div class="card col-lg-5 mt-3 white-glass-simple " style="max-height: 400px; overflow: auto;">
+        <div class="card-body p-1">
+            <table class="table table-hover ">
+              <thead>
+                <tr class="orange-color">
+                  <th scope="col" class="orange-color">Segment</th>
+                  <th scope="col" class="orange-color">Total of harnesses</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let total of totalBysegmentData.getValue()">
+                <tr >
+                  <td class="blue-color">{{total.segment}}</td>
+                  <td class="blue-color">{{total.count}}</td>
+  
+                </tr>
+               </ng-container>
+              </tbody>
+            </table>
+        </div>
+      </div>
+
+      <div class="col-lg-6 white-glass-simple">
+        <h5 class="fw-light text-center card-title py-2">Harness per Segment</h5>
+        <mat-card-content>
+          <canvas id="totalQuantityBySegmentChart" ></canvas>
+        </mat-card-content>
+      </div> -->
+
+
+      <div class="col-lg-6  white-glass-simple">
+        <h5 class="fw-light text-center card-title py-2">Harness per Reference</h5>
+        <mat-card-content>
+          <canvas id="quantityByRefChart" style="max-height: 400px; "></canvas>
+        </mat-card-content>
+      </div>     
+   
+
+      <div class="card col-lg-5 mt-3"  style="max-height: 400px; overflow: auto;">
+        <div class="card-body p-1">
+            <table class="table table-hover ">
+              <thead >
+                <tr class="orange-color">
+                  <th scope="col" class="orange-color">Referece</th>
+                  <th scope="col" class="orange-color">Project</th>
+                  <th scope="col" class="orange-color">Segment</th>
+                  <th scope="col" class="orange-color">Line</th>
+                  <th scope="col" class="orange-color">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let total of sumByRefApiResponse.getValue()">
+                <tr >
+                  <th class="blue-color">{{total.Code_fournisseur}}</th>
+                  <td scope="row" class="blue-color">{{total.line.segment.project.name}}</td>
+                  <td class="blue-color">{{total.line.segment.name}}</td>
+                  <td class="blue-color">{{total.line.name}}</td>
+                  <th class="light-blue-color">{{total.total_quantity}}</th> 
+                </tr>
+               </ng-container>
+              </tbody>
+            </table>
+          <!-- </ng-container> -->
+        </div>
+      </div>
+
+ 
+      <!-- <mat-card class="col-lg-5 bk-glass-blue">
+        <mat-card-content>
+          <canvas id="quantityByRefChart" style="max-height: 300px;"></canvas>
+        </mat-card-content>
+      </mat-card> -->
+    </div>
+
+  </div>
+</main>
+

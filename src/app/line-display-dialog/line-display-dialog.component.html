@@ -1,0 +1,77 @@
+<div class="m-3 p-3 bk-blue">
+  <form [formGroup]="confForm">
+    <h5 class="card-title orange-color mb-4">Line display settings</h5>
+    <div class="card-body px-5 my-2">
+      <div class="mb-3">
+        <label for="line_disply_operatores" class="form-label blue-color">Operators</label>
+        <input
+          type="number"
+          class="form-control"
+          id="line_disply_opera5tores"
+          formControlName="line_disply_operatores"
+        />
+        <div *ngIf="confForm.get('line_disply_operatores')?.invalid && confForm.get('line_disply_operatores')?.touched">
+          <small class="text-danger">Operators are required</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="line_disply_rangeTime" class="form-label blue-color"
+          >Standard time (hour)<sup>Fx/(Hour)</sup></label
+        >
+        <input
+          type="number"
+          step="0.1"
+          class="form-control blue-color"
+          id="line_disply_rangeTime"
+          formControlName="line_disply_rangeTime"
+        />
+        <div *ngIf="confForm.get('line_disply_rangeTime')?.invalid && confForm.get('line_disply_rangeTime')?.touched">
+          <small class="text-danger">Standard time is required</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="line_disply_target" class="form-label blue-color">Target</label>
+        <input
+          type="number"
+          step="0.1"
+          class="form-control blue-color"
+          id="line_disply_target"
+          formControlName="line_disply_target"
+        />
+        <div *ngIf="confForm.get('line_disply_target')?.invalid && confForm.get('line_disply_target')?.touched">
+          <small class="text-danger">Target is required</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="line_disply_efficiency" class="form-label blue-color">Efficiency Type</label>
+        <select
+          class="form-control"
+          id="line_disply_efficiency"
+          formControlName="line_disply_efficiency"
+        >
+          <option value="1">Default</option>
+          <option value="2">By Target</option>
+        </select>
+        <div *ngIf="confForm.get('line_disply_efficiency')?.invalid && confForm.get('line_disply_efficiency')?.touched">
+          <small class="text-danger">Efficiency type is required</small>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end w-100 text-end">
+        <button
+          class="btn blue-bg-color text-white"
+          (click)="updateData()"
+          type="button"
+        >
+          Validate
+        </button>
+        <button
+          class="btn btn-danger bk-glass-blue mx-3"
+          (click)="closeDialog()"
+          type="button"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

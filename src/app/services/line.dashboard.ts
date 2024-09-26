@@ -68,4 +68,17 @@ export class LineDashboardService {
   getQuantitybyDay(filters: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/quantity-by-date`, filters, this.httpOptions);
   }
+
+  getEfficiencyByHour(filters: any):Observable<HourlyEfficiency[]>{
+    return this.http.post<HourlyEfficiency[]>(`${this.baseUrl}/efficiency-by-hour`, filters, this.httpOptions);
+  }
+}
+
+
+export interface HourlyEfficiency {
+  hour: number;                 // The hour of the day (e.g., 0 for midnight, 23 for 11 PM)
+  total_quantity: number;       // Total quantity produced in that hour
+  range_time: number;           // The range time associated with the production process for that hour
+  productive_hours: number;     // The productive hours calculated for that hour
+  efficiency: number;           // The calculated efficiency for that hour
 }

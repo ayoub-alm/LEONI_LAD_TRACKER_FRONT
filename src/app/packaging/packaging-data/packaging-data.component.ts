@@ -15,6 +15,11 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserModel } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { AddNewUserDialogComponent } from '../add-new-user-dialog/add-new-user-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-packaging-data',
   standalone: true,
@@ -55,8 +60,16 @@ export class PackagingDataComponent implements AfterViewInit {
     'action',
   ];
 
+  userDisplayedColumns: string[] =[
+    'select',
+    'fullName',
+    'matriculate',
+    'role',
+    'action'
+  ]
   packagingDataSource = new MatTableDataSource<PackagingBoxModel>([]);
   harnessesDataSource = new MatTableDataSource<ProductionHarnessModel>([]);
+  userDataSource = new MatTableDataSource<UserModel>([]);
 
   selection = new SelectionModel<PackagingBoxModel>(true, []);
   harnessSelection = new SelectionModel<ProductionHarnessModel>(true, []);
@@ -67,10 +80,16 @@ export class PackagingDataComponent implements AfterViewInit {
   @ViewChild('paginator2') paginator2!: MatPaginator;
   @ViewChild('sort2') sort2!: MatSort;
 
+  @ViewChild('paginator3') paginator3!: MatPaginator;
+  @ViewChild('sort3') sort3!: MatSort;
+
+
   constructor(
     private packagesService: PackagingBoxService,
     private prodHarnessesService: ProdHarnessService,
-    private snakBar: MatSnackBar
+    private userService: UserService,
+    private snakBar: MatSnackBar,
+    private dialogRef: MatDialog
   ) {
         this.packagesService.getAllPackagingBoxes().pipe(
           tap((packages) => {
@@ -87,6 +106,14 @@ export class PackagingDataComponent implements AfterViewInit {
             this.harnessesDataSource.sort = this.sort2;
           })
         ).subscribe();
+
+        this.userService.getAllUsers().pipe(
+          tap((users) =>{
+            this.userDataSource.data = users;
+            this.userDataSource.paginator = this.paginator3;
+            this.userDataSource.sort = this.sort3;
+          })
+        ).subscribe()
       }
 
   ngAfterViewInit() {
@@ -100,6 +127,10 @@ export class PackagingDataComponent implements AfterViewInit {
     if (this.harnessesDataSource) {
       this.harnessesDataSource.paginator = this.paginator2;
       this.harnessesDataSource.sort = this.sort2;
+    }
+    if (this.userDataSource) {
+      this.userDataSource.paginator = this.paginator3;
+      this.userDataSource.sort = this.sort3;
     }
   }
   
@@ -189,9 +220,15 @@ export class PackagingDataComponent implements AfterViewInit {
     console.log('Edit row', row);
   }
 
-  delete(row: PackagingBoxModel) {
-    // Implement your delete logic here
-    console.log('Delete row', row);
+  deletePackage(row: PackagingBoxModel) {
+    this.packagesService.deletePackagingBox(row.id).pipe(
+      tap(value => {
+        this.snakBar.open(`${row.barcode} is deleted with success`, "OK", {duration:2000})
+        const filtredData = this.packagingDataSource.data.filter(data => data.id != row.id)
+        this.packagingDataSource.data =  filtredData
+      })
+    ).subscribe()
+  
   }
 
   editHarness(row: ProductionHarnessModel) {
@@ -283,5 +320,23 @@ export class PackagingDataComponent implements AfterViewInit {
         console.log('Users tab selected');
         break;
     }
+  }
+
+  addUser(){
+    this.dialogRef.open(AddNewUserDialogComponent, {
+      width: '50%',
+      data: { /* pass any data here if needed */ }
+    });
+  }
+
+  deleteUser(row: UserModel){
+    const index = this.userDataSource.data.indexOf(row);
+    this.userService.deleteUser(row.id).subscribe(date => {
+      if (index >= 0) {
+        this.userDataSource.data.splice(index, 1);  // Remove from data array
+        this.userDataSource = new MatTableDataSource(this.userDataSource.data);  // Reassign dataSource to refresh table
+        this.snakBar.open('user '+ row.username +' deleted',"OK",{duration:2000})
+      }
+    })
   }
 }
